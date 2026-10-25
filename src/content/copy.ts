@@ -3,10 +3,10 @@ import type { Lang } from "../lib/site";
 /** Shared chrome: navigation, footer, calls to action, demo labels. */
 export const UI = {
   en: {
-    nav: { features: "Features", how: "How it works", screens: "Screens", faq: "FAQ", open: "Open the app", openShort: "Open app", menu: "Menu" },
+    nav: { features: "Features", how: "How it works", screens: "Screens", faq: "FAQ", demo: "Demo", open: "Open the app", openShort: "Open app", menu: "Menu" },
     langSwitch: "Polski",
     langSwitchLabel: "Ta strona po polsku",
-    cta: { start: "Start for free", demo: "See it in action", note: "Sign in with Google. No card, no trial, no ads." },
+    cta: { start: "Start for free", demo: "See it in action", tryDemo: "Try the live demo", note: "Sign in with Google. No card, no trial, no ads." },
     footer: {
       tagline: "A free, non-profit portfolio tracker for XTB accounts.",
       product: "Product",
@@ -61,10 +61,10 @@ export const UI = {
     },
   },
   pl: {
-    nav: { features: "Funkcje", how: "Jak to działa", screens: "Ekrany", faq: "FAQ", open: "Otwórz aplikację", openShort: "Aplikacja", menu: "Menu" },
+    nav: { features: "Funkcje", how: "Jak to działa", screens: "Ekrany", faq: "FAQ", demo: "Demo", open: "Otwórz aplikację", openShort: "Aplikacja", menu: "Menu" },
     langSwitch: "English",
     langSwitchLabel: "This page in English",
-    cta: { start: "Zacznij za darmo", demo: "Zobacz, jak działa", note: "Logowanie przez Google. Bez karty, bez okresu próbnego, bez reklam." },
+    cta: { start: "Zacznij za darmo", demo: "Zobacz, jak działa", tryDemo: "Wypróbuj demo", note: "Logowanie przez Google. Bez karty, bez okresu próbnego, bez reklam." },
     footer: {
       tagline: "Darmowy tracker portfela dla kont w XTB, prowadzony non-profit.",
       product: "Produkt",
@@ -168,7 +168,7 @@ export const HOME = {
         { k: "ike", t: "IKE and IKZE", d: "Tax-sheltered accounts sit next to the others in every chart and stay out of the tax estimate." },
         { k: "alerts", t: "Slack and Discord alerts", d: "Rules for daily moves, price levels and portfolio value, checked every weekday after the US close." },
         { k: "public", t: "Public portfolio page", d: "Share a read-only summary under your own address, with percentages only if you prefer." },
-        { k: "themes", t: "Light, dark, two palettes", d: "A glass interface that follows your system theme, on a laptop and on a phone." },
+        { k: "deposits", t: "Deposit statistics", d: "Your average monthly contribution, the typical and the largest deposit, and how regularly you add money, by year and by account." },
       ],
     },
     bench: {
@@ -187,12 +187,13 @@ export const HOME = {
     screens: {
       eyebrow: "Real screens",
       h2: "The actual app, running on the demo portfolio",
-      lead: "No mock-ups. These are screenshots of portfoliomanager with a demo XTB portfolio of three accounts (PLN, USD and IKE) and simulated prices.",
+      lead: "No mock-ups. These are screenshots of portfoliomanager with a demo XTB portfolio of three accounts (PLN, USD and IKE) and simulated prices. The same portfolio runs in the live demo.",
       tabs: [
         { k: "overview", t: "Overview", alt: "portfoliomanager overview: portfolio value, KPI tiles, value chart and comparison with indices" },
         { k: "performance", t: "Performance", alt: "Performance tab with a monthly returns heatmap and yearly results" },
         { k: "holdings", t: "Holdings", alt: "Holdings table with quantity, average price, value and gain per position" },
         { k: "dividends", t: "Dividends", alt: "Dividends tab with net payouts per month and a payout history" },
+        { k: "deposits", t: "Deposits", alt: "Deposits tab with the average monthly contribution, the largest deposit and deposits per month" },
         { k: "taxes", t: "Taxes", alt: "PIT-38 estimate with revenue, costs, income and tax per year" },
         { k: "alerts", t: "Alerts", alt: "Alerts tab with Discord and Slack webhooks and alert rules" },
       ],
@@ -260,6 +261,10 @@ export const HOME = {
       {
         q: "Is portfoliomanager really free?",
         a: "Yes. It is a non-profit project with no paid plan, no trial and no ads. Running costs are kept low on purpose: the app sleeps when nobody is using it and the daily job runs for about a minute.",
+      },
+      {
+        q: "Can I try it without an account?",
+        a: "Yes. The live demo runs the full app on a sample XTB portfolio with three accounts and simulated prices. Nothing you do there is saved.",
       },
       {
         q: "Is it affiliated with XTB?",
@@ -340,7 +345,7 @@ export const HOME = {
         { k: "ike", t: "IKE i IKZE", d: "Konta z ulgą podatkową widać obok pozostałych na każdym wykresie, a z szacunku podatku są wyłączone." },
         { k: "alerts", t: "Alerty na Slacku i Discordzie", d: "Reguły dla dziennego ruchu, poziomu ceny i wartości portfela, sprawdzane w dni robocze po zamknięciu sesji w USA." },
         { k: "public", t: "Publiczna strona portfela", d: "Udostępnij podsumowanie portfela pod własnym adresem, jeśli chcesz, to tylko z procentami." },
-        { k: "themes", t: "Jasny, ciemny, dwa motywy", d: "Szklany interfejs, który dopasowuje się do motywu systemu, na laptopie i na telefonie." },
+        { k: "deposits", t: "Statystyki wpłat", d: "Średnia miesięczna wpłata, typowa i największa wpłata oraz to, jak regularnie dopłacasz, w latach i na kontach." },
       ],
     },
     bench: {
@@ -359,12 +364,13 @@ export const HOME = {
     screens: {
       eyebrow: "Prawdziwe ekrany",
       h2: "Tak wygląda aplikacja z portfelem demo",
-      lead: "Bez makiet. To zrzuty ekranu portfoliomanagera z demonstracyjnym portfelem XTB złożonym z trzech kont (PLN, USD i IKE) i symulowanymi notowaniami.",
+      lead: "Bez makiet. To zrzuty ekranu portfoliomanagera z demonstracyjnym portfelem XTB złożonym z trzech kont (PLN, USD i IKE) i symulowanymi notowaniami. Ten sam portfel działa w demo.",
       tabs: [
         { k: "overview", t: "Przegląd", alt: "Przegląd w portfoliomanagerze: wartość portfela, kafelki z wynikami, wykres wartości i porównanie z indeksami" },
         { k: "performance", t: "Wyniki", alt: "Zakładka Wyniki z mapą miesięcznych stóp zwrotu i wynikami w latach" },
         { k: "holdings", t: "Aktywa", alt: "Tabela aktywów z ilością, średnią ceną, wartością i wynikiem każdej pozycji" },
         { k: "dividends", t: "Dywidendy", alt: "Zakładka Dywidendy z wypłatami netto w miesiącach i historią wypłat" },
+        { k: "deposits", t: "Wpłaty", alt: "Zakładka Wpłaty ze średnią miesięczną wpłatą, największą wpłatą i wpłatami w miesiącach" },
         { k: "taxes", t: "Podatki", alt: "Szacunek PIT-38 z przychodem, kosztami, dochodem i podatkiem w latach" },
         { k: "alerts", t: "Alerty", alt: "Zakładka Alerty z webhookami Discorda i Slacka oraz regułami alertów" },
       ],
@@ -432,6 +438,10 @@ export const HOME = {
       {
         q: "Czy portfoliomanager jest naprawdę darmowy?",
         a: "Tak. To projekt non-profit bez płatnego planu, okresu próbnego i reklam. Koszty utrzymania są celowo niskie: aplikacja usypia, gdy nikt z niej nie korzysta, a codzienne zadanie działa około minuty.",
+      },
+      {
+        q: "Czy mogę wypróbować bez zakładania konta?",
+        a: "Tak. Demo uruchamia całą aplikację na przykładowym portfelu XTB z trzema kontami i symulowanymi notowaniami. Nic, co tam zrobisz, nie jest zapisywane.",
       },
       {
         q: "Czy to narzędzie XTB?",

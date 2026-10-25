@@ -1,6 +1,6 @@
 ---
 import { UI } from "../content/copy";
-import { APP_LOGIN, route, type Lang, type RouteKey } from "../lib/site";
+import { APP_LOGIN, DEMO_URL, route, type Lang, type RouteKey } from "../lib/site";
 import Logo from "./Logo.astro";
 
 interface Props {
@@ -17,6 +17,7 @@ const links = [
   { href: anchor("how-it-works"), label: t.nav.how },
   { href: anchor("screens"), label: t.nav.screens },
   { href: anchor("faq"), label: t.nav.faq },
+  { href: DEMO_URL, label: t.nav.demo },
 ];
 ---
 <header class="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6">

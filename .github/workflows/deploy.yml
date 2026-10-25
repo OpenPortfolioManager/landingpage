@@ -1,6 +1,5 @@
-# Builds the static site and publishes it to GitHub Pages on every push to main.
-# For a custom domain set the repository variables SITE_URL (e.g. https://example.pl) and BASE_PATH (/),
-# then point the domain at GitHub Pages; canonical, hreflang and sitemap URLs follow automatically.
+# Builds the static site and publishes it to GitHub Pages (custom domain starpedia.pl, set in Settings -> Pages)
+# on every push to main. The canonical address lives in astro.config.mjs.
 name: Deploy
 
 on:
@@ -23,8 +22,6 @@ jobs:
     timeout-minutes: 10
     env:
       ASTRO_TELEMETRY_DISABLED: "1"
-      SITE_URL: ${{ vars.SITE_URL || 'https://p14s3k.github.io' }}
-      BASE_PATH: ${{ vars.BASE_PATH || '/landingpage' }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7

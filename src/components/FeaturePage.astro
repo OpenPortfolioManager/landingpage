@@ -3,7 +3,7 @@ import demo from "../data/demo.json";
 import { UI } from "../content/copy";
 import { PAGES } from "../content/pages";
 import Base from "../layouts/Base.astro";
-import { absolute, APP_LOGIN, href, money, route, ROUTES, signedPct, type Lang, type RouteKey } from "../lib/site";
+import { absolute, APP_LOGIN, DEMO_URL, href, money, route, ROUTES, signedPct, type Lang, type RouteKey } from "../lib/site";
 import Icon from "./Icon.astro";
 
 interface Props {
@@ -68,8 +68,8 @@ if (p.faq?.length)
             <a href={APP_LOGIN} class="btn btn-primary px-6 py-3 text-[15px]">
               {ui.cta.start} <Icon name="arrow" size={18} />
             </a>
-            <a href={`${route("home", lang)}#demo`} class="btn btn-ghost px-6 py-3 text-[15px]">
-              {ui.cta.demo}
+            <a href={DEMO_URL} class="btn btn-ghost px-6 py-3 text-[15px]">
+              {ui.cta.tryDemo}
             </a>
           </div>
         )
@@ -165,7 +165,6 @@ if (p.faq?.length)
 
   <section class="mx-auto max-w-6xl px-5 pt-20 sm:px-8">
     <div data-reveal class="glass-float relative overflow-hidden rounded-[32px] px-6 py-12 text-center">
-      <div aria-hidden="true" class="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_70%_at_50%_0%,rgba(123,99,245,.35),transparent_70%)]"></div>
       <p class="relative text-2xl font-semibold tracking-[-0.02em]">{lang === "en" ? "Free for every XTB investor." : "Za darmo dla każdego inwestora XTB."}</p>
       <a href={APP_LOGIN} class="btn btn-primary relative mt-6 px-6 py-3 text-[15px]">
         {ui.cta.start} <Icon name="arrow" size={18} />

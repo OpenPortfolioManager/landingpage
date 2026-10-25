@@ -73,29 +73,6 @@ const io = new IntersectionObserver(
 );
 document.querySelectorAll("[data-reveal], [data-animate]").forEach((el) => io.observe(el));
 
-// ---------------------------------------------------------------- glass sheen follows the pointer
-
-if (window.matchMedia("(hover: hover)").matches) {
-  let frame = 0;
-  let last: PointerEvent | null = null;
-  document.addEventListener(
-    "pointermove",
-    (e) => {
-      last = e;
-      if (frame) return;
-      frame = requestAnimationFrame(() => {
-        frame = 0;
-        const el = (last?.target as Element | null)?.closest?.<HTMLElement>(".glass, .glass-float");
-        if (!el || !last) return;
-        const r = el.getBoundingClientRect();
-        el.style.setProperty("--mx", `${last.clientX - r.left}px`);
-        el.style.setProperty("--my", `${last.clientY - r.top}px`);
-      });
-    },
-    { passive: true },
-  );
-}
-
 // ---------------------------------------------------------------- demo tabs
 
 const replay = (pane: HTMLElement) => {

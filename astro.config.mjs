@@ -2,14 +2,11 @@
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 
-// Where the site is served. GitHub Pages project site by default; for a custom domain set SITE_URL
-// (e.g. https://example.pl) and BASE_PATH=/ in the deploy workflow. Canonical and hreflang URLs follow.
-const site = process.env.SITE_URL ?? "https://p14s3k.github.io";
-const base = process.env.BASE_PATH ?? "/landingpage";
-
+// The one public address of the site. Canonical, hreflang, Open Graph and sitemap URLs are built from it,
+// so a single canonical host exists for every page.
 export default defineConfig({
-  site,
-  base,
+  site: "https://starpedia.pl",
+  base: "/",
   trailingSlash: "always",
   build: { format: "directory", inlineStylesheets: "auto" },
   compressHTML: true,

@@ -2,7 +2,8 @@ export type Lang = "en" | "pl";
 
 export const APP_URL = "https://portfolio.starpedia.pl";
 export const APP_LOGIN = `${APP_URL}/login`;
-export const REPO_URL = "https://github.com/P14S3K/landingpage";
+export const REPO_URL = "https://github.com/OpenPortfolioManager/landingpage";
+export const DEMO_URL = `${APP_URL}/demo`;
 
 /** Every page exists in both languages; the key pairs them for canonical and hreflang links. */
 export const ROUTES = {
@@ -85,7 +86,7 @@ export const areaPath = (pts: ReadonlyArray<readonly [number, number]>, h: numbe
 export const tickerHue = (ticker: string) => [...ticker.replace(/\..*$/, "")].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % 360;
 export const tickerStyle = (ticker: string, size = 36) => {
   const hue = tickerHue(ticker);
-  return `width:${size}px;height:${size}px;font-size:${Math.round(size * 0.31)}px;background:linear-gradient(145deg, oklch(0.72 0.14 ${hue}), oklch(0.5 0.15 ${(hue + 30) % 360}))`;
+  return `width:${size}px;height:${size}px;font-size:${Math.round(size * 0.31)}px;background:oklch(0.6 0.12 ${hue})`;
 };
 export const tickerShort = (ticker: string) => {
   const sym = ticker.replace(/\..*$/, "");

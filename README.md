@@ -5,7 +5,7 @@ English at `/`, Polish at `/pl/`. Static [Astro](https://astro.build) site, depl
 
 ```bash
 npm ci
-npm run dev      # http://localhost:4321/landingpage/
+npm run dev      # http://localhost:4321/
 npm run build    # astro check + static build into dist/
 ```
 
@@ -32,11 +32,11 @@ language under `src/pages/` and `src/pages/pl/`. Canonical, hreflang and sitemap
 IKE, January 2023 to today, simulated prices) is imported through the app's own XTB parser and valued with its analytics
 engine, so every number on the site is one the app would show for those exports.
 
-## Domain
+## Domain and SEO
 
-The site builds for `https://p14s3k.github.io/landingpage/` by default. To move it to a custom domain, set the repository
-variables `SITE_URL` and `BASE_PATH` (Settings → Secrets and variables → Actions → Variables), add the domain in Settings →
-Pages and create the DNS record GitHub shows there.
+The only public address is **https://starpedia.pl** (`site` in `astro.config.mjs`; custom domain in Settings → Pages, HTTPS
+enforced). Every page carries a canonical URL on that host, `hreflang` links to its other-language twin (en, pl, x-default →
+en), and appears in `/sitemap.xml` with the same alternates. `robots.txt` points to the sitemap. The GitHub Pages address
+redirects to the custom domain and is not referenced anywhere in the code.
 
-On the default project-site address, `robots.txt` lives under `/landingpage/`, where crawlers do not look for it; submit
-`sitemap.xml` in Google Search Console instead. With a custom domain at the root both work as they are.
+The app's demo (`https://portfolio.starpedia.pl/demo`) is linked from here and is `noindex` on purpose.
