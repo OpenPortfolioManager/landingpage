@@ -429,9 +429,9 @@ export const PAGES: Record<Exclude<RouteKey, "home">, Record<Lang, FeaturePage>>
         {
           h2: "How it is protected",
           list: [
-            "The whole portfolio is stored as one document, compressed and encrypted with AES-256-GCM. The key is kept outside the database.",
+            "Your whole portfolio is compressed and encrypted with AES-256-GCM before it is stored. The encryption key is kept separately from the data.",
             "Webhook addresses are encrypted the same way and never shown again after you save them.",
-            "The database runs in a private network in the Amsterdam region and is not reachable from the internet.",
+            "Everything is stored on servers in Europe.",
             "Sessions use signed cookies, and every change to your data is checked for the same origin.",
           ],
         },
@@ -478,9 +478,9 @@ export const PAGES: Record<Exclude<RouteKey, "home">, Record<Lang, FeaturePage>>
         {
           h2: "Jak chronimy dane",
           list: [
-            "Cały portfel to jeden dokument, skompresowany i zaszyfrowany AES-256-GCM. Klucz jest przechowywany poza bazą.",
+            "Cały portfel jest kompresowany i szyfrowany AES-256-GCM, zanim zostanie zapisany. Klucz szyfrujący jest przechowywany oddzielnie od danych.",
             "Adresy webhooków szyfrujemy tak samo i po zapisaniu już ich nie wyświetlamy.",
-            "Baza działa w sieci prywatnej w regionie Amsterdam i nie jest dostępna z internetu.",
+            "Wszystko jest przechowywane na serwerach w Europie.",
             "Sesje opierają się na podpisanych ciasteczkach, a każda zmiana danych jest sprawdzana pod kątem pochodzenia z tej samej strony.",
           ],
         },

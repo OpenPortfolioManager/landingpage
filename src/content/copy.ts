@@ -232,7 +232,7 @@ export const HOME = {
       h2: "Your data stays yours",
       items: [
         { t: "Google sign-in only", d: "No passwords to leak. We store your name, email address and profile photo, nothing else from Google." },
-        { t: "Encrypted at rest", d: "Portfolio data is compressed and encrypted with AES-256-GCM before it reaches the database. Webhook addresses too." },
+        { t: "Encrypted, kept in Europe", d: "Portfolio data is compressed and encrypted with AES-256-GCM before it is stored on servers in Europe. Webhook addresses too." },
         { t: "Yours to take or delete", d: "Download a full JSON backup whenever you like, or delete the account together with every byte of data." },
         { t: "No ads, no trackers", d: "Apart from your Google profile photo, the app loads nothing from third parties in your browser. The project is non-profit and has nothing to sell." },
       ],
@@ -407,7 +407,7 @@ export const HOME = {
       h2: "Twoje dane zostają Twoje",
       items: [
         { t: "Tylko logowanie przez Google", d: "Nie ma haseł, które mogłyby wyciec. Zapisujemy imię, adres e-mail i zdjęcie profilowe, nic więcej z Google." },
-        { t: "Szyfrowanie w bazie", d: "Dane portfela są kompresowane i szyfrowane AES-256-GCM, zanim trafią do bazy. Adresy webhooków również." },
+        { t: "Szyfrowane, w Europie", d: "Dane portfela są kompresowane i szyfrowane AES-256-GCM, zanim zostaną zapisane na serwerach w Europie. Adresy webhooków również." },
         { t: "Pobierz albo usuń", d: "Pełną kopię w JSON pobierzesz w każdej chwili, możesz też usunąć konto razem ze wszystkimi danymi." },
         { t: "Bez reklam i śledzenia", d: "Poza zdjęciem profilowym z Google aplikacja nie ładuje w przeglądarce niczego od firm trzecich. Projekt jest non-profit i nie ma czego sprzedawać." },
       ],
