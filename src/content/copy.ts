@@ -469,7 +469,7 @@ export const HOME = {
       },
       {
         q: "Gdzie są przechowywane moje dane?",
-        a: "W bazie Postgres w regionie Amsterdam, jako jeden zaszyfrowany dokument na użytkownika. Baza nie jest dostępna z internetu, tylko z sieci prywatnej aplikacji.",
+        a: "Na serwerach w Europie. Dane portfela są zaszyfrowane i całkowicie bezpieczne, a w każdej chwili możesz je pobrać albo usunąć.",
       },
     ] as Faq[],
     final: {
