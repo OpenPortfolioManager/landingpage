@@ -1,7 +1,7 @@
 ---
 import { UI } from "../content/copy";
 import { PAGES } from "../content/pages";
-import { APP_LOGIN, REPO_URL, route, type Lang, type RouteKey } from "../lib/site";
+import { APP_LOGIN, route, type Lang, type RouteKey } from "../lib/site";
 import Logo from "./Logo.astro";
 
 interface Props {
@@ -45,7 +45,6 @@ const year = new Date().getFullYear();
       <h2 class="text-xs font-semibold uppercase tracking-[0.12em] text-muted">{t.project}</h2>
       <ul class="mt-4 space-y-2.5 text-sm text-ink-2">
         <li><a class="hover:text-ink" href={route("privacy", lang)}>{t.privacy}</a></li>
-        <li><a class="hover:text-ink" href={REPO_URL} rel="noopener">{t.source}</a></li>
       </ul>
     </div>
   </div>

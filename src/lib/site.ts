@@ -2,7 +2,6 @@ export type Lang = "en" | "pl";
 
 export const APP_URL = "https://portfolio.starpedia.pl";
 export const APP_LOGIN = `${APP_URL}/login`;
-export const REPO_URL = "https://github.com/OpenPortfolioManager/landingpage";
 export const DEMO_URL = `${APP_URL}/demo`;
 
 /** Every page exists in both languages; the key pairs them for canonical and hreflang links. */

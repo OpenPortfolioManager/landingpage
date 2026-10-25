@@ -14,7 +14,6 @@ export const UI = {
       project: "Project",
       app: "Open the app",
       privacy: "Privacy and data",
-      source: "Landing page source",
       disclaimer:
         "portfoliomanager is an independent, non-profit project and is not affiliated with XTB S.A. XTB and xStation are trademarks of their owners. Figures shown on this site come from a demo portfolio with simulated prices. Nothing here is investment or tax advice.",
     },
@@ -72,7 +71,6 @@ export const UI = {
       project: "Projekt",
       app: "Otwórz aplikację",
       privacy: "Prywatność i dane",
-      source: "Kod tej strony",
       disclaimer:
         "portfoliomanager to niezależny projekt non-profit, niepowiązany z XTB S.A. XTB i xStation są znakami towarowymi ich właścicieli. Liczby na tej stronie pochodzą z portfela demonstracyjnego z symulowanymi notowaniami. Nic tutaj nie jest rekomendacją inwestycyjną ani poradą podatkową.",
     },
@@ -131,7 +129,6 @@ export const HOME = {
     title: "Free XTB Portfolio Tracker with Dividends and PIT-38 | portfoliomanager",
     description:
       "Free, non-profit portfolio tracker for XTB. Import xStation .xlsx exports and get live valuation, dividends, a PIT-38 estimate and a comparison with the S&P 500.",
-    eyebrow: "Free and non-profit, made for XTB accounts",
     h1: "Free XTB portfolio tracker",
     h1Sub: "that reads your exports",
     lead:
@@ -308,7 +305,6 @@ export const HOME = {
     title: "Darmowy tracker portfela XTB: dywidendy, PIT-38, S&P 500 | portfoliomanager",
     description:
       "Darmowe narzędzie non-profit do śledzenia portfela XTB. Import eksportu .xlsx z xStation, wycena na żywo, dywidendy, szacunek PIT-38 i porównanie z S&P 500.",
-    eyebrow: "Darmowe i non-profit, stworzone dla kont w XTB",
     h1: "Darmowy tracker portfela XTB",
     h1Sub: "który czyta Twoje eksporty",
     lead:
