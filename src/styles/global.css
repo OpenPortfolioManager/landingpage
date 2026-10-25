@@ -284,12 +284,6 @@ body {
   0% { background: color-mix(in oklab, var(--loss) 30%, transparent); }
   100% { background: transparent; }
 }
-.marquee {
-  animation: marquee 40s linear infinite;
-}
-@keyframes marquee {
-  to { transform: translateX(-50%); }
-}
 
 @media (prefers-reduced-motion: reduce) {
   html {

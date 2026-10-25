@@ -127,20 +127,6 @@ const jsonLd = [
     </div>
   </section>
 
-  <!-- ================= sources strip ================= -->
-  <section class="mt-16 overflow-hidden border-y border-line py-5" aria-label={lang === "en" ? "Data sources" : "Źródła danych"}>
-    <div class="marquee flex w-max gap-10 whitespace-nowrap text-sm text-muted">
-      {
-        [...c.sources, ...c.sources].map((s, i) => (
-          <span class="inline-flex items-center gap-2.5" aria-hidden={i >= c.sources.length ? "true" : undefined}>
-            <span class="h-1.5 w-1.5 rounded-full bg-accent" />
-            {s}
-          </span>
-        ))
-      }
-    </div>
-  </section>
-
   <!-- ================= how it works ================= -->
   <section id="how-it-works" class="mx-auto max-w-6xl scroll-mt-28 px-5 pt-28 sm:px-8">
     <div data-reveal class="max-w-2xl">

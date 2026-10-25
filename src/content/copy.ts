@@ -133,7 +133,6 @@ export const HOME = {
     h1Sub: "that reads your exports",
     lead:
       "Export your account history from xStation, drop the .xlsx files in, and see what the portfolio is worth today, how it did against the S&P 500, what it paid in dividends and roughly how much PIT-38 tax you owe.",
-    sources: ["Quotes from Yahoo Finance and Stooq", "Exchange rates from NBP", "Import from XTB xStation (.xlsx)", "IKE and IKZE supported", "PLN, USD and EUR views"],
     how: {
       eyebrow: "How it works",
       h2: "From an XTB export to a full dashboard in about a minute",
@@ -309,7 +308,6 @@ export const HOME = {
     h1Sub: "który czyta Twoje eksporty",
     lead:
       "Wyeksportuj historię konta z xStation, wrzuć pliki .xlsx i zobacz, ile portfel jest wart dziś, jak wypadł na tle S&P 500, ile przyniósł w dywidendach i jaki mniej więcej podatek wyjdzie w PIT-38.",
-    sources: ["Notowania z Yahoo Finance i Stooq", "Kursy walut z NBP", "Import z XTB xStation (.xlsx)", "Obsługa IKE i IKZE", "Widok w PLN, USD i EUR"],
     how: {
       eyebrow: "Jak to działa",
       h2: "Od eksportu z XTB do pełnego dashboardu w około minutę",
