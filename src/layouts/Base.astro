@@ -1,0 +1,73 @@
+---
+import "../styles/global.css";
+import Footer from "../components/Footer.astro";
+import Nav from "../components/Nav.astro";
+import { absolute, href, ROUTES, type Lang, type RouteKey } from "../lib/site";
+
+interface Props {
+  lang: Lang;
+  page: RouteKey;
+  title: string;
+  description: string;
+  jsonLd?: object[];
+}
+const { lang, page, title, description, jsonLd = [] } = Astro.props;
+const other: Lang = lang === "en" ? "pl" : "en";
+const canonical = absolute(ROUTES[page][lang]);
+const ogImage = absolute(`/og-${lang}.jpg`);
+const ogLocale = { en: "en_GB", pl: "pl_PL" };
+// Marks html.js before first paint so animated elements start hidden only when JS will reveal them.
+const jsFlag = `document.documentElement.classList.add("js")`;
+---
+<!doctype html>
+<html lang={lang} dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en" href={absolute(ROUTES[page].en)} />
+    <link rel="alternate" hreflang="pl" href={absolute(ROUTES[page].pl)} />
+    <link rel="alternate" hreflang="x-default" href={absolute(ROUTES[page].en)} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#06051a" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href={href("/favicon.svg")} type="image/svg+xml" />
+    <link rel="icon" href={href("/favicon-32.png")} sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href={href("/apple-touch-icon.png")} />
+    <link rel="sitemap" href={href("/sitemap.xml")} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="portfoliomanager" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={lang === "en" ? "portfoliomanager, a free XTB portfolio tracker" : "portfoliomanager, darmowy tracker portfela XTB"} />
+    <meta property="og:locale" content={ogLocale[lang]} />
+    <meta property="og:locale:alternate" content={ogLocale[other]} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script is:inline set:html={jsFlag} />
+    {jsonLd.map((d) => <script type="application/ld+json" is:inline set:html={JSON.stringify(d)} />)}
+  </head>
+  <body class="min-h-dvh">
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-surface focus:px-4 focus:py-2">
+      {lang === "en" ? "Skip to content" : "Przejdź do treści"}
+    </a>
+    <Nav lang={lang} page={page} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} page={page} />
+    <script>
+      import "../scripts/motion";
+    </script>
+  </body>
+</html>

@@ -1,0 +1,599 @@
+---
+import demo from "../data/demo.json";
+import { HOME, UI } from "../content/copy";
+import Base from "../layouts/Base.astro";
+import { absolute, APP_LOGIN, href, linePath, money, pct, route, ROUTES, scale, signedPct, thin, tickerShort, tickerStyle, type Lang } from "../lib/site";
+import HeroDemo from "./HeroDemo.astro";
+import Icon from "./Icon.astro";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = HOME[lang];
+const ui = UI[lang];
+
+// ---- benchmark section: three ranges, each rebased to its own start
+const tw = demo.timeline.map((p) => p[3] as number);
+const sp = demo.benchmarks["S&P 500"].map((p) => p[1] as number);
+const nd = demo.benchmarks["Nasdaq-100"].map((p) => p[1] as number);
+const dates = demo.timeline.map((p) => String(p[0]));
+const fmtDate = (d: string) => new Intl.DateTimeFormat(lang === "pl" ? "pl-PL" : "en-GB", { month: "short", year: "numeric" }).format(new Date(`${d}T12:00:00Z`));
+const box = { w: 620, h: 300, pad: 12 };
+const ranges = (["y1", "y3", "all"] as const).map((k) => {
+  const n = k === "y1" ? 52 : k === "y3" ? 156 : tw.length;
+  const cut = <T,>(xs: T[]) => xs.slice(Math.max(0, xs.length - n));
+  const rebase = (xs: number[]) => {
+    const s = thin(cut(xs));
+    return s.map((v) => (1 + v) / (1 + s[0]) - 1);
+  };
+  const series = [
+    { name: ui.demo.portfolio, color: "var(--accent)", width: 2.6, v: rebase(tw) },
+    { name: "S&P 500", color: "var(--s2)", width: 1.8, v: rebase(sp) },
+    { name: "Nasdaq-100", color: "var(--s3)", width: 1.8, v: rebase(nd) },
+  ];
+  const all = series.flatMap((s) => s.v);
+  const lo = Math.min(0, ...all);
+  const hi = Math.max(...all);
+  const step = hi - lo > 0.6 ? 0.25 : hi - lo > 0.25 ? 0.1 : 0.05;
+  const ticks: number[] = [];
+  for (let t = Math.ceil(lo / step) * step; t <= hi; t += step) ticks.push(Math.round(t * 100) / 100);
+  const y = (v: number) => box.pad + (1 - (v - lo) / (hi - lo)) * (box.h - box.pad * 2);
+  const d = cut(dates);
+  return {
+    k,
+    label: c.bench.ranges[k],
+    series: series.map((s) => ({ ...s, path: linePath(scale(s.v, box, lo, hi)), end: s.v[s.v.length - 1], endY: y(s.v[s.v.length - 1]) })),
+    ticks: ticks.map((t) => ({ t, y: y(t) })),
+    from: fmtDate(d[0]),
+    to: fmtDate(d[d.length - 1]),
+  };
+});
+
+// ---- tax card (2025)
+const tax = demo.tax.find((y) => y.year === 2025)!;
+const taxRows = [
+  { label: c.tax.rows.revenue, v: tax.revenue, d: 2 },
+  { label: c.tax.rows.cost, v: tax.cost, d: 2 },
+  { label: c.tax.rows.income, v: tax.income, d: 2, strong: true },
+  { label: c.tax.rows.tax, v: tax.tax, d: 0, accent: true },
+  { label: c.tax.rows.div, v: tax.divToPay, d: 0 },
+];
+
+// ---- public mock
+const pubHoldings = demo.holdings.slice(0, 5);
+const pubSpark = linePath(scale(thin(tw.slice(-104), 60), { w: 400, h: 90, pad: 6 }));
+
+const shots = c.screens.tabs.map((t) => ({
+  ...t,
+  img: { overview: "desk-overview", performance: "desk-wyniki", holdings: "desk-aktywa", dividends: "desk-dywidendy", taxes: "desk-podatki", alerts: "desk-alerty" }[t.k]!,
+}));
+const themeShots = ["desk-overview", "indigo-light", "amber-light", "amber-dark"];
+const img = (name: string) => ({ src: href(`/img/${name}-1600.webp`), srcset: `${href(`/img/${name}-960.webp`)} 960w, ${href(`/img/${name}-1600.webp`)} 1600w` });
+
+const featureIcon = { live: "live", returns: "returns", bench: "bench", div: "div", tax: "tax", ike: "ike", alerts: "alerts", public: "public", themes: "themes" } as const;
+const featureLink: Partial<Record<string, string>> = { bench: route("benchmark", lang), div: route("dividends", lang), tax: route("tax", lang), public: route("public", lang) };
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "portfoliomanager",
+    applicationCategory: "FinanceApplication",
+    operatingSystem: "Web browser",
+    url: APP_LOGIN,
+    description: c.description,
+    inLanguage: "pl",
+    isAccessibleForFree: true,
+    offers: { "@type": "Offer", price: "0", priceCurrency: "PLN" },
+    featureList: c.features.items.map((f) => f.t),
+    screenshot: absolute("/img/desk-overview-1600.webp"),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "portfoliomanager",
+    url: absolute(ROUTES.home[lang]),
+    inLanguage: lang,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: c.faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+  },
+];
+---
+<Base lang={lang} page="home" title={c.title} description={c.description} jsonLd={jsonLd}>
+  <!-- ================= hero ================= -->
+  <section class="relative px-4 pt-32 sm:px-6 sm:pt-40">
+    <div class="mx-auto max-w-4xl text-center">
+      <p class="inset mx-auto inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium text-ink-2">
+        <span class="live-dot"></span>{c.eyebrow}
+      </p>
+      <h1 class="mt-6 text-[clamp(40px,7vw,80px)] font-semibold leading-[1.02] tracking-[-0.045em]">
+        {c.h1}
+        <span class="text-shine block pb-2">{c.h1Sub}</span>
+      </h1>
+      <p class="mx-auto mt-5 max-w-2xl text-[17px] leading-relaxed text-ink-2 sm:text-lg">{c.lead}</p>
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <a href={APP_LOGIN} class="btn btn-primary px-6 py-3 text-[15px]">
+          {ui.cta.start}
+          <Icon name="arrow" size={18} />
+        </a>
+        <a href="#demo" class="btn btn-ghost px-6 py-3 text-[15px]">{ui.cta.demo}</a>
+      </div>
+      <p class="mt-4 text-xs text-muted">{ui.cta.note}</p>
+    </div>
+
+    <div id="demo" data-reveal style="--d:200" class="relative mx-auto mt-14 max-w-6xl scroll-mt-28">
+      <div aria-hidden="true" class="pointer-events-none absolute -inset-x-10 -top-10 bottom-0 -z-10 rounded-[60px] bg-[radial-gradient(60%_50%_at_50%_0%,rgba(123,99,245,.35),transparent_70%)] blur-2xl"></div>
+      <HeroDemo lang={lang} />
+    </div>
+  </section>
+
+  <!-- ================= sources strip ================= -->
+  <section class="mt-16 overflow-hidden border-y border-line py-5" aria-label={lang === "en" ? "Data sources" : "Źródła danych"}>
+    <div class="marquee flex w-max gap-10 whitespace-nowrap text-sm text-muted">
+      {
+        [...c.sources, ...c.sources].map((s, i) => (
+          <span class="inline-flex items-center gap-2.5" aria-hidden={i >= c.sources.length ? "true" : undefined}>
+            <span class="h-1.5 w-1.5 rounded-full bg-accent" />
+            {s}
+          </span>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ================= how it works ================= -->
+  <section id="how-it-works" class="mx-auto max-w-6xl scroll-mt-28 px-5 pt-28 sm:px-8">
+    <div data-reveal class="max-w-2xl">
+      <p class="eyebrow">{c.how.eyebrow}</p>
+      <h2 class="mt-3 text-[clamp(30px,4.2vw,48px)] font-semibold leading-[1.08] tracking-[-0.035em]">{c.how.h2}</h2>
+    </div>
+    <ol class="mt-12 grid gap-5 md:grid-cols-3">
+      {
+        c.how.steps.map((s, i) => (
+          <li data-reveal style={`--d:${i * 120}`} class="glass p-6">
+            <div class="flex items-center gap-3">
+              <span class="tabular flex h-9 w-9 items-center justify-center rounded-full bg-accent-soft text-sm font-semibold text-accent">{i + 1}</span>
+              <Icon name={(["file", "upload", "chart"] as const)[i]} size={20} class="text-muted" />
+            </div>
+            <h3 class="mt-5 text-lg font-semibold tracking-[-0.01em]">{s.t}</h3>
+            <p class="mt-2 text-[15px] leading-relaxed text-ink-2">{s.d}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <!-- ================= features ================= -->
+  <section id="features" class="mx-auto max-w-6xl scroll-mt-28 px-5 pt-28 sm:px-8">
+    <div data-reveal class="max-w-2xl">
+      <p class="eyebrow">{c.features.eyebrow}</p>
+      <h2 class="mt-3 text-[clamp(30px,4.2vw,48px)] font-semibold leading-[1.08] tracking-[-0.035em]">{c.features.h2}</h2>
+      <p class="mt-4 text-[17px] leading-relaxed text-ink-2">{c.features.lead}</p>
+    </div>
+    <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        c.features.items.map((f, i) => (
+          <li data-reveal style={`--d:${(i % 3) * 90}`} class="glass group flex flex-col p-6">
+            <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent-soft text-accent ring-1 ring-inset ring-accent/20">
+              <Icon name={featureIcon[f.k as keyof typeof featureIcon]} size={21} />
+            </span>
+            <h3 class="mt-5 text-[17px] font-semibold tracking-[-0.01em]">{f.t}</h3>
+            <p class="mt-2 flex-1 text-[15px] leading-relaxed text-ink-2">{f.d}</p>
+            {featureLink[f.k] && (
+              <a href={featureLink[f.k]} class="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-2">
+                {lang === "en" ? "Learn more" : "Dowiedz się więcej"}
+                <Icon name="arrow" size={15} class="transition-transform group-hover:translate-x-0.5" />
+              </a>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- ================= benchmark ================= -->
+  <section class="mx-auto max-w-6xl px-5 pt-28 sm:px-8">
+    <div class="grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.4fr)]">
+      <div data-reveal>
+        <p class="eyebrow">{c.bench.eyebrow}</p>
+        <h2 class="mt-3 text-[clamp(30px,4.2vw,48px)] font-semibold leading-[1.08] tracking-[-0.035em]">{c.bench.h2}</h2>
+        <p class="mt-4 text-[17px] leading-relaxed text-ink-2">{c.bench.lead}</p>
+        <ul class="mt-6 space-y-3">
+          {
+            c.bench.points.map((p) => (
+              <li class="flex items-start gap-3 text-[15px] text-ink-2">
+                <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gain/15 text-gain">
+                  <Icon name="check" size={13} stroke={3} />
+                </span>
+                {p}
+              </li>
+            ))
+          }
+        </ul>
+        <a href={route("benchmark", lang)} class="mt-7 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-2">
+          {c.bench.more} <Icon name="arrow" size={15} />
+        </a>
+      </div>
+      <div data-reveal style="--d:120" class="glass-float rounded-[28px] p-5 sm:p-6" data-ranges>
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex flex-wrap gap-2 text-xs">
+            {
+              ranges[2].series.map((s) => (
+                <span class="inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-white/[.03] px-2.5 py-1">
+                  <span class="inline-block h-0.5 w-3.5 rounded-full" style={`background:${s.color}`} />
+                  {s.name}
+                </span>
+              ))
+            }
+          </div>
+          <div class="inset inline-flex rounded-full p-[3px] text-xs" role="group" aria-label={lang === "en" ? "Period" : "Okres"}>
+            {
+              ranges.map((r) => (
+                <button
+                  type="button"
+                  data-range-btn={r.k}
+                  aria-pressed={r.k === "all" ? "true" : "false"}
+                  class="rounded-full px-3 py-1 font-medium text-ink-2 transition-colors aria-pressed:bg-surface-2 aria-pressed:text-ink"
+                >
+                  {r.label}
+                </button>
+              ))
+            }
+          </div>
+        </div>
+        {
+          ranges.map((r) => (
+            <div data-range={r.k} hidden={r.k !== "all"} data-animate>
+              <svg viewBox={`0 0 ${box.w + 64} ${box.h + 28}`} class="mt-5 block h-auto w-full" role="img" aria-label={`${c.bench.h2} ${r.from} – ${r.to}`}>
+                {r.ticks.map((t) => (
+                  <g>
+                    <line x1="0" x2={box.w} y1={t.y} y2={t.y} stroke="var(--grid)" />
+                    <text x="2" y={t.y - 6} fill="var(--muted)" font-size="12">
+                      {signedPct(t.t, lang, 0)}
+                    </text>
+                  </g>
+                ))}
+                {r.series.map((s, i) => (
+                  <path d={s.path} fill="none" stroke={s.color} stroke-width={s.width} stroke-linejoin="round" pathLength="1" class="draw" style={`--d:${i * 160}`} />
+                ))}
+                {r.series.map((s) => (
+                  <g>
+                    <circle cx={box.w} cy={s.endY} r="4" fill={s.color} stroke="var(--page)" stroke-width="2" />
+                    <text x={box.w + 9} y={s.endY + 4} fill={s.color} font-size="13" font-weight="600">
+                      {signedPct(s.end, lang, 0)}
+                    </text>
+                  </g>
+                ))}
+                <text x="0" y={box.h + 24} fill="var(--muted)" font-size="12">{r.from}</text>
+                <text x={box.w} y={box.h + 24} fill="var(--muted)" font-size="12" text-anchor="end">{r.to}</text>
+              </svg>
+            </div>
+          ))
+        }
+        <p class="mt-3 text-xs text-muted">{ui.demo.label} · {ui.demo.benchNote}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= screens ================= -->
+  <section id="screens" class="mx-auto max-w-6xl scroll-mt-28 px-5 pt-28 sm:px-8" data-shots>
+    <div data-reveal class="max-w-2xl">
+      <p class="eyebrow">{c.screens.eyebrow}</p>
+      <h2 class="mt-3 text-[clamp(30px,4.2vw,48px)] font-semibold leading-[1.08] tracking-[-0.035em]">{c.screens.h2}</h2>
+      <p class="mt-4 text-[17px] leading-relaxed text-ink-2">{c.screens.lead}</p>
+    </div>
+    <div data-reveal class="scrollbar-none -mx-5 mt-8 overflow-x-auto px-5" role="tablist" aria-label={c.screens.eyebrow}>
+      <div class="inset inline-flex gap-1 rounded-full p-1">
+        {
+          shots.map((s, i) => (
+            <button
+              type="button"
+              role="tab"
+              data-shot-btn={s.k}
+              aria-selected={i === 0 ? "true" : "false"}
+              class="whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium text-ink-2 transition-colors aria-selected:bg-surface-2 aria-selected:text-ink"
+            >
+              {s.t}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+    <div data-reveal style="--d:120" class="glass-float mt-6 overflow-hidden rounded-[24px] p-2 sm:p-3">
+      <div class="flex items-center gap-1.5 px-2 pb-2 pt-1" aria-hidden="true">
+        <span class="h-2.5 w-2.5 rounded-full bg-white/10"></span><span class="h-2.5 w-2.5 rounded-full bg-white/10"></span><span class="h-2.5 w-2.5 rounded-full bg-white/10"></span>
+      </div>
+      {
+        shots.map((s, i) => (
+          <div data-shot={s.k} hidden={i !== 0}>
+            <img
+              {...img(s.img)}
+              sizes="(min-width: 1200px) 1140px, 100vw"
+              width="1600"
+              height="1000"
+              alt={s.alt}
+              loading={i === 0 ? "eager" : "lazy"}
+              decoding="async"
+              class="block h-auto w-full rounded-[16px]"
+            />
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="mt-16 grid items-center gap-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+      <div data-reveal>
+        <h3 class="text-2xl font-semibold tracking-[-0.02em]">{c.screens.themesTitle}</h3>
+        <div class="mt-5 grid grid-cols-2 gap-3">
+          {
+            themeShots.map((t, i) => (
+              <figure class="glass overflow-hidden p-1.5">
+                <img src={href(`/img/${t}-960.webp`)} width="960" height="600" alt={`portfoliomanager: ${c.screens.themes[i]}`} loading="lazy" decoding="async" class="block h-auto w-full rounded-[18px]" />
+                <figcaption class="px-2 pb-1 pt-2 text-xs text-muted">{c.screens.themes[i]}</figcaption>
+              </figure>
+            ))
+          }
+        </div>
+      </div>
+      <div data-reveal style="--d:120" class="flex flex-col items-center text-center lg:items-start lg:text-left">
+        <div class="relative mx-auto w-[260px] rounded-[44px] border border-white/10 bg-[#0b0a20] p-2.5 shadow-[0_40px_100px_-30px_rgba(0,0,0,.8),inset_0_1px_0_rgba(255,255,255,.08)] lg:mx-0">
+          <div class="absolute left-1/2 top-4 z-10 h-5 w-20 -translate-x-1/2 rounded-full bg-black"></div>
+          <img src={href("/img/mobile-overview-780.webp")} width="780" height="1688" alt={c.screens.phoneAlt} loading="lazy" decoding="async" class="block h-auto w-full rounded-[36px]" />
+        </div>
+        <h3 class="mt-8 text-2xl font-semibold tracking-[-0.02em]">{c.screens.phoneTitle}</h3>
+        <p class="mt-3 max-w-sm text-[15px] leading-relaxed text-ink-2">{c.screens.phoneText}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= tax ================= -->
+  <section class="mx-auto max-w-6xl px-5 pt-28 sm:px-8">
+    <div class="grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-2">
+      <div data-reveal>
+        <p class="eyebrow">{c.tax.eyebrow}</p>
+        <h2 class="mt-3 text-[clamp(30px,4.2vw,48px)] font-semibold leading-[1.08] tracking-[-0.035em]">{c.tax.h2}</h2>
+        <p class="mt-4 text-[17px] leading-relaxed text-ink-2">{c.tax.lead}</p>
+        <a href={route("tax", lang)} class="mt-7 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-2">
+          {c.tax.more} <Icon name="arrow" size={15} />
+        </a>
+      </div>
+      <div data-reveal style="--d:120" class="glass-float rounded-[28px] p-6 sm:p-8">
+        <div class="flex items-center justify-between gap-3">
+          <span class="text-sm font-semibold">PIT-38</span>
+          <span class="rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-semibold text-accent">{c.tax.year}</span>
+        </div>
+        <dl class="mt-6 divide-y divide-line">
+          {
+            taxRows.map((r, i) => (
+              <div class="pop-in flex items-baseline justify-between gap-4 py-3.5" style={`--d:${200 + i * 140}`}>
+                <dt class:list={["text-[15px]", r.strong ? "font-semibold text-ink" : "text-ink-2"]}>{r.label}</dt>
+                <dd
+                  class:list={["tabular font-semibold tracking-[-0.01em]", r.accent ? "text-3xl text-accent-2" : "text-lg"]}
+                  data-count={r.v}
+                  data-fmt="money"
+                  data-digits={r.d}
+                  data-lang={lang}
+                >
+                  {money(r.v, lang, r.d)}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+        <p class="mt-4 text-xs text-muted">{c.tax.note}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= alerts ================= -->
+  <section class="mx-auto max-w-6xl px-5 pt-28 sm:px-8">
+    <div class="grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-2">
+      <div data-reveal style="--d:120" class="order-2 lg:order-1">
+        <div class="glass-float rounded-[28px] p-5 sm:p-6" data-animate>
+          <div class="flex items-center gap-2 text-sm text-muted">
+            <span class="flex h-6 w-6 items-center justify-center rounded-md bg-[#4a154b] text-[11px] font-bold text-white">S</span>
+            Slack · {ui.demo.channel}
+          </div>
+          <div class="pop-in mt-4 flex gap-3" style="--d:300">
+            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#2c2577]">
+              <svg viewBox="0 0 474 352" class="h-4 w-auto" aria-hidden="true"><circle cx="237" cy="176" r="64" fill="#7b63f5"></circle><line x1="9" y1="176" x2="465" y2="176" stroke="#d6cfff" stroke-width="18" stroke-linecap="round"></line></svg>
+            </span>
+            <div class="min-w-0 text-[13.5px] leading-relaxed">
+              <div class="flex items-baseline gap-2"><b class="font-semibold">portfoliomanager</b><span class="rounded bg-white/10 px-1 text-[9px] font-bold">APP</span><span class="text-[11px] text-muted">22:41</span></div>
+              <div class="mt-1 text-base font-bold">portfoliomanager · 3 alerty · {demo.asOf.split("-").reverse().join(".")}</div>
+              <div class="mt-1 space-y-0.5 text-ink-2">
+                <div class="pop-in" style="--d:700">📈 PKO BP (PKO.PL): +1,51% dziś (próg +1,5%) · cena 82,00 zł</div>
+                <div class="pop-in" style="--d:950">🎯 NVIDIA (NVDA.US): cena 182,00 USD ≥ 180,00 USD · alert jednorazowy, wyłączony</div>
+                <div class="pop-in" style="--d:1200">💰 Portfel: wartość 266 971 zł ≥ 250 000 zł</div>
+              </div>
+              <div class="pop-in mt-2 text-xs text-muted" style="--d:1400"><span class="text-accent underline">Otwórz portfoliomanager</span> · dane na {demo.asOf.split("-").reverse().join(".")}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-reveal class="order-1 lg:order-2">
+        <p class="eyebrow">{c.alerts.eyebrow}</p>
+        <h2 class="mt-3 text-[clamp(30px,4.2vw,48px)] font-semibold leading-[1.08] tracking-[-0.035em]">{c.alerts.h2}</h2>
+        <p class="mt-4 text-[17px] leading-relaxed text-ink-2">{c.alerts.lead}</p>
+        <ul class="mt-6 grid gap-2.5 sm:grid-cols-2">
+          {
+            c.alerts.points.map((p) => (
+              <li class="inset flex items-start gap-2.5 rounded-2xl px-3.5 py-3 text-sm text-ink-2">
+                <Icon name="alerts" size={16} class="mt-0.5 shrink-0 text-accent" />
+                {p}
+              </li>
+            ))
+          }
+        </ul>
+        {c.alerts.note && <p class="mt-4 text-xs text-muted">{c.alerts.note}</p>}
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= public portfolio ================= -->
+  <section class="mx-auto max-w-6xl px-5 pt-28 sm:px-8">
+    <div class="grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-2">
+      <div data-reveal>
+        <p class="eyebrow">{c.public.eyebrow}</p>
+        <h2 class="mt-3 text-[clamp(30px,4.2vw,48px)] font-semibold leading-[1.08] tracking-[-0.035em]">{c.public.h2}</h2>
+        <p class="mt-4 text-[17px] leading-relaxed text-ink-2">{c.public.lead}</p>
+        <a href={route("public", lang)} class="mt-7 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-2">
+          {c.public.more} <Icon name="arrow" size={15} />
+        </a>
+      </div>
+      <div data-reveal style="--d:120" class="glass-float rounded-[28px] p-6" data-animate>
+        <div class="inset inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[11px] text-ink-2">
+          <span class="live-dot !h-1.5 !w-1.5"></span>portfolio.starpedia.pl/p/anna
+        </div>
+        <div class="mt-3 flex items-end justify-between gap-4">
+          <div>
+            <div class="text-xl font-semibold tracking-[-0.02em]">{c.public.mockTitle}</div>
+            <div class="text-xs text-muted">{c.public.mockMeta}</div>
+          </div>
+          <div class="text-right">
+            <div class="tabular text-2xl font-semibold text-gain" data-count={demo.totals.pnlPct} data-fmt="spct" data-lang={lang}>{signedPct(demo.totals.pnlPct, lang)}</div>
+            <div class="text-[11px] text-muted">XIRR {signedPct(demo.totals.xirr, lang)}</div>
+          </div>
+        </div>
+        <svg viewBox="0 0 400 90" class="mt-3 block h-auto w-full" aria-hidden="true">
+          <path d={pubSpark} fill="none" stroke="var(--accent)" stroke-width="2.4" pathLength="1" class="draw"></path>
+        </svg>
+        <table class="tabular mt-3 w-full text-sm">
+          <thead>
+            <tr class="text-left text-[10.5px] uppercase tracking-[0.08em] text-muted">
+              {c.public.cols.map((h, i) => <th class:list={["py-2 font-semibold", i > 0 && "text-right"]}>{h}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {
+              pubHoldings.map((h, i) => (
+                <tr class="pop-in border-t border-line" style={`--d:${300 + i * 100}`}>
+                  <td class="py-2">
+                    <span class="flex items-center gap-2.5">
+                      <span class="avatar" style={tickerStyle(h.ticker, 28)} aria-hidden="true">
+                        {tickerShort(h.ticker)}
+                      </span>
+                      <span class="max-w-[170px] truncate">{h.name}</span>
+                    </span>
+                  </td>
+                  <td class="py-2 text-right">{pct(h.weight, lang, 1)}</td>
+                  <td class:list={["py-2 text-right font-medium", h.pnlPct >= 0 ? "text-gain" : "text-loss"]}>{signedPct(h.pnlPct, lang, 1)}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= privacy ================= -->
+  <section class="mx-auto max-w-6xl px-5 pt-28 sm:px-8">
+    <div data-reveal class="max-w-2xl">
+      <p class="eyebrow">{c.privacy.eyebrow}</p>
+      <h2 class="mt-3 text-[clamp(30px,4.2vw,48px)] font-semibold leading-[1.08] tracking-[-0.035em]">{c.privacy.h2}</h2>
+    </div>
+    <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        c.privacy.items.map((p, i) => (
+          <li data-reveal style={`--d:${i * 90}`} class="glass p-6">
+            <Icon name={(["google", "lock", "download", "eyeOff"] as const)[i]} size={22} class="text-accent" />
+            <h3 class="mt-4 font-semibold">{p.t}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-ink-2">{p.d}</p>
+          </li>
+        ))
+      }
+    </ul>
+    <a data-reveal href={route("privacy", lang)} class="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-2">
+      {c.privacy.more} <Icon name="arrow" size={15} />
+    </a>
+  </section>
+
+  <!-- ================= compare ================= -->
+  <section class="mx-auto max-w-6xl px-5 pt-28 sm:px-8">
+    <div data-reveal class="max-w-2xl">
+      <p class="eyebrow">{c.compare.eyebrow}</p>
+      <h2 class="mt-3 text-[clamp(30px,4.2vw,48px)] font-semibold leading-[1.08] tracking-[-0.035em]">{c.compare.h2}</h2>
+    </div>
+    <div data-reveal class="glass mt-10 overflow-x-auto">
+      <table class="w-full min-w-[640px] text-left text-[15px]">
+        <thead>
+          <tr>
+            {
+              c.compare.cols.map((h, i) => (
+                <th scope="col" class:list={["px-5 py-4 text-sm font-semibold", i === 1 ? "text-accent" : "text-muted"]}>
+                  {h}
+                </th>
+              ))
+            }
+          </tr>
+        </thead>
+        <tbody>
+          {
+            c.compare.rows.map((r) => (
+              <tr class="border-t border-line">
+                <th scope="row" class="px-5 py-3.5 font-medium text-ink">{r[0]}</th>
+                <td class="bg-accent/[.06] px-5 py-3.5 font-semibold text-ink">
+                  <span class="inline-flex items-center gap-2">
+                    <Icon name="check" size={15} stroke={3} class="text-gain" />
+                    {r[1]}
+                  </span>
+                </td>
+                <td class="px-5 py-3.5 text-ink-2">{r[2]}</td>
+                <td class="px-5 py-3.5 text-ink-2">{r[3]}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ================= faq ================= -->
+  <section id="faq" class="mx-auto max-w-3xl scroll-mt-28 px-5 pt-28 sm:px-8">
+    <h2 data-reveal class="text-center text-[clamp(30px,4.2vw,44px)] font-semibold tracking-[-0.035em]">{c.faqTitle}</h2>
+    <div class="mt-10 space-y-3">
+      {
+        c.faq.map((f, i) => (
+          <details data-reveal style={`--d:${Math.min(i, 4) * 60}`} class="glass group px-5 py-1 open:pb-4" open={i === 0}>
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-[16px] font-semibold [&::-webkit-details-marker]:hidden">
+              {f.q}
+              <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/5 text-muted transition-transform duration-300 group-open:rotate-45">
+                <Icon name="plus" size={15} stroke={2.4} />
+              </span>
+            </summary>
+            <p class="text-[15px] leading-relaxed text-ink-2">{f.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ================= final cta ================= -->
+  <section class="mx-auto max-w-6xl px-5 pt-28 sm:px-8">
+    <div data-reveal class="glass-float relative overflow-hidden rounded-[36px] px-6 py-16 text-center sm:px-12">
+      <div aria-hidden="true" class="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_70%_at_50%_0%,rgba(123,99,245,.4),transparent_70%)]"></div>
+      <h2 class="relative mx-auto max-w-2xl text-[clamp(30px,4.6vw,52px)] font-semibold leading-[1.06] tracking-[-0.04em]">{c.final.h2}</h2>
+      <p class="relative mx-auto mt-4 max-w-xl text-[17px] text-ink-2">{c.final.lead}</p>
+      <div class="relative mt-8 flex flex-wrap justify-center gap-3">
+        <a href={APP_LOGIN} class="btn btn-primary px-7 py-3.5 text-[15px]">
+          {ui.cta.start} <Icon name="arrow" size={18} />
+        </a>
+      </div>
+      <p class="relative mt-4 text-xs text-muted">{ui.cta.note}</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+</style>

@@ -1,0 +1,22 @@
+---
+// The radius mark, dark-background colours of the Indygo palette.
+interface Props {
+  class?: string;
+}
+const { class: cls = "h-7 w-auto" } = Astro.props;
+const LINES: Array<[number, number, number]> = [
+  [214.3, 259.7, 6], [161.9, 312.1, 23], [135.2, 338.8, 40], [116.3, 357.7, 57], [102, 372, 74],
+  [91, 220.4, 91], [253.6, 383, 91], [82.5, 180.9, 108], [293.1, 391.5, 108], [76.2, 164.3, 125], [309.7, 397.8, 125],
+  [71.9, 154.5, 142], [319.5, 402.1, 142], [69.3, 149.2, 159], [324.8, 404.7, 159], [69.3, 149.2, 193], [324.8, 404.7, 193],
+  [71.9, 154.5, 210], [319.5, 402.1, 210], [76.2, 164.3, 227], [309.7, 397.8, 227], [82.5, 180.9, 244], [293.1, 391.5, 244],
+  [91, 220.4, 261], [253.6, 383, 261], [102, 372, 278], [116.3, 357.7, 295], [135.2, 338.8, 312], [161.9, 312.1, 329],
+  [214.3, 259.7, 346],
+];
+---
+<svg viewBox="0 0 474 352" class={cls} aria-hidden="true">
+  <circle cx="237" cy="176" r="64" fill="#2c2577"></circle>
+  <g fill="none" stroke="#d6cfff" stroke-width="7" stroke-linecap="round">
+    {LINES.map(([x1, x2, y]) => <line x1={x1} y1={y} x2={x2} y2={y}></line>)}
+  </g>
+  <line x1="9" y1="176" x2="465" y2="176" stroke="#8f7bff" stroke-width="9" stroke-linecap="round"></line>
+</svg>

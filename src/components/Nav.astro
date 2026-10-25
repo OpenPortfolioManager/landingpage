@@ -1,0 +1,76 @@
+---
+import { UI } from "../content/copy";
+import { APP_LOGIN, route, type Lang, type RouteKey } from "../lib/site";
+import Logo from "./Logo.astro";
+
+interface Props {
+  lang: Lang;
+  page: RouteKey;
+}
+const { lang, page } = Astro.props;
+const t = UI[lang];
+const other: Lang = lang === "en" ? "pl" : "en";
+const home = route("home", lang);
+const anchor = (id: string) => (page === "home" ? `#${id}` : `${home}#${id}`);
+const links = [
+  { href: anchor("features"), label: t.nav.features },
+  { href: anchor("how-it-works"), label: t.nav.how },
+  { href: anchor("screens"), label: t.nav.screens },
+  { href: anchor("faq"), label: t.nav.faq },
+];
+---
+<header class="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6">
+  <nav
+    class="glass-float mx-auto flex max-w-6xl items-center justify-between gap-2 rounded-full py-2 pl-3.5 pr-1.5 sm:pl-4 sm:pr-2"
+    aria-label={lang === "en" ? "Main" : "Główna"}
+  >
+    <a href={home} class="flex min-w-0 items-center gap-2" aria-label="portfoliomanager">
+      <Logo class="h-5 w-auto sm:h-6" />
+      <span class="text-[14px] font-semibold tracking-[-0.02em] text-ink sm:text-[15px]">portfolio<span class="text-accent">manager</span></span>
+    </a>
+    <ul class="hidden items-center gap-1 text-sm text-ink-2 md:flex">
+      {
+        links.map((l) => (
+          <li>
+            <a href={l.href} class="rounded-full px-3 py-1.5 transition-colors hover:bg-white/5 hover:text-ink">
+              {l.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="flex shrink-0 items-center gap-1">
+      <a
+        href={route(page, other)}
+        hreflang={other}
+        lang={other}
+        title={t.langSwitchLabel}
+        class="hidden rounded-full px-3 py-1.5 text-sm font-medium text-ink-2 transition-colors hover:bg-white/5 hover:text-ink sm:inline-flex"
+      >
+        {other.toUpperCase()}
+      </a>
+      <a href={APP_LOGIN} class="btn btn-primary whitespace-nowrap px-3.5 py-2 text-sm sm:px-4"><span class="sm:hidden">{t.nav.openShort}</span><span class="hidden sm:inline">{t.nav.open}</span></a>
+      <details class="group relative md:hidden">
+        <summary class="flex h-9 w-9 cursor-pointer list-none items-center justify-center rounded-full text-ink-2 hover:bg-white/5 [&::-webkit-details-marker]:hidden" aria-label={t.nav.menu}>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+        </summary>
+        <ul class="glass-float absolute right-0 top-12 w-56 rounded-3xl p-2 text-sm">
+          {
+            links.map((l) => (
+              <li>
+                <a href={l.href} class="block rounded-2xl px-3 py-2.5 text-ink-2 hover:bg-white/5 hover:text-ink">
+                  {l.label}
+                </a>
+              </li>
+            ))
+          }
+          <li class="mt-1 border-t border-line pt-1">
+            <a href={route(page, other)} hreflang={other} lang={other} class="block rounded-2xl px-3 py-2.5 text-ink-2 hover:bg-white/5 hover:text-ink">
+              {t.langSwitch}
+            </a>
+          </li>
+        </ul>
+      </details>
+    </div>
+  </nav>
+</header>
