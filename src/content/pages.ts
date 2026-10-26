@@ -26,7 +26,7 @@ export const PAGES: Record<Exclude<RouteKey, "home">, Record<Lang, FeaturePage>>
     en: {
       title: "XTB Dividend Tracker: net payouts, withholding tax, yield | portfoliomanager",
       description:
-        "Track dividends from your XTB accounts for free: gross, withholding tax and net per payout, monthly and yearly totals and a 12-month yield. Import from xStation .xlsx.",
+        "Track dividends from your XTB accounts for free: gross, withholding tax and net per payout, monthly and yearly totals and a 12-month yield. Import the xStation report.",
       crumb: "Dividend tracker",
       eyebrow: "Dividends",
       h1: "XTB dividend tracker",
@@ -73,7 +73,7 @@ export const PAGES: Record<Exclude<RouteKey, "home">, Record<Lang, FeaturePage>>
     pl: {
       title: "Dywidendy z XTB: netto, podatek u źródła, stopa dywidendy | portfoliomanager",
       description:
-        "Darmowe śledzenie dywidend z kont XTB: brutto, podatek u źródła i netto dla każdej wypłaty, sumy miesięczne i roczne oraz stopa dywidendy z 12 miesięcy. Import .xlsx z xStation.",
+        "Darmowe śledzenie dywidend z kont XTB: brutto, podatek u źródła i netto dla każdej wypłaty, sumy miesięczne i roczne oraz stopa dywidendy z 12 miesięcy. Import raportu z xStation.",
       crumb: "Dywidendy z XTB",
       eyebrow: "Dywidendy",
       h1: "Dywidendy z XTB w jednej tabeli",
@@ -145,6 +145,7 @@ export const PAGES: Record<Exclude<RouteKey, "home">, Record<Lang, FeaturePage>>
           p: [
             "Standard accounts in PLN, USD and EUR. IKE and IKZE accounts are excluded, because gains there are not reported in PIT-38 as long as the account rules are kept.",
             "Shares and ETFs are listed separately from derivatives such as CFDs, the way the form splits them.",
+            "Each space has its own estimate, so a family member's portfolio kept in another space does not mix with yours.",
           ],
         },
         {
@@ -193,6 +194,7 @@ export const PAGES: Record<Exclude<RouteKey, "home">, Record<Lang, FeaturePage>>
           p: [
             "Zwykłe konta w PLN, USD i EUR. IKE i IKZE są wyłączone, bo zysków z nich nie wykazuje się w PIT-38, dopóki spełniasz warunki konta.",
             "Akcje i ETF-y pokazujemy osobno od instrumentów pochodnych, takich jak CFD, tak jak dzieli je formularz.",
+            "Każda przestrzeń ma własny szacunek, więc portfel kogoś z rodziny trzymany w innej przestrzeni nie miesza się z Twoim.",
           ],
         },
         {
@@ -349,6 +351,7 @@ export const PAGES: Record<Exclude<RouteKey, "home">, Record<Lang, FeaturePage>>
           p: [
             "The page is a snapshot that is rebuilt every weekday after the US close, and whenever you ask for a refresh. Turning publishing off deletes the snapshot at once.",
             "It lives at an address you choose, under portfolio.starpedia.pl/p/.",
+            "Each space has its own public page, so you can publish one portfolio and keep another private.",
           ],
         },
         {
@@ -393,6 +396,7 @@ export const PAGES: Record<Exclude<RouteKey, "home">, Record<Lang, FeaturePage>>
           p: [
             "Strona to migawka przeliczana w każdy dzień roboczy po zamknięciu sesji w USA i na Twoją prośbę. Wyłączenie publikacji od razu ją usuwa.",
             "Działa pod wybranym przez Ciebie adresem w portfolio.starpedia.pl/p/.",
+            "Każda przestrzeń ma własną publiczną stronę, więc jeden portfel możesz opublikować, a drugi zostawić prywatny.",
           ],
         },
         {
@@ -422,7 +426,7 @@ export const PAGES: Record<Exclude<RouteKey, "home">, Record<Lang, FeaturePage>>
           h2: "What the app stores",
           list: [
             "From Google: your name, email address and profile photo. No Google tokens are kept after sign-in.",
-            "Your portfolio: the operations and positions from the XTB files you upload, plus your settings.",
+            "Your portfolios: the operations and positions from the XTB reports you upload, one portfolio per space, plus your settings.",
             "Optional: Slack or Discord webhook addresses, alert rules and the public page settings, if you use them.",
           ],
         },
@@ -431,6 +435,7 @@ export const PAGES: Record<Exclude<RouteKey, "home">, Record<Lang, FeaturePage>>
           list: [
             "Your whole portfolio is compressed and encrypted with AES-256-GCM before it is stored. The encryption key is kept separately from the data.",
             "Webhook addresses are encrypted the same way and never shown again after you save them.",
+            "E-mail alerts are sent from alerts@starpedia.pl through Resend, an e-mail delivery service, and only to the address of your Google account. A message holds the alert lines, such as a price or the portfolio value.",
             "Everything is stored on servers in Europe.",
             "Sessions use signed cookies, and every change to your data is checked for the same origin.",
           ],
@@ -439,14 +444,14 @@ export const PAGES: Record<Exclude<RouteKey, "home">, Record<Lang, FeaturePage>>
           h2: "Your controls",
           list: [
             "Download a full JSON backup of your portfolio at any time.",
-            "Delete an account from the portfolio, or delete everything together with your user account.",
+            "Delete an account from the portfolio, a whole space, or everything together with your user account.",
             "Signing out also clears the market data cached in your browser.",
           ],
         },
         {
           h2: "What happens in your browser",
           p: [
-            "XTB files are read in your browser; only the parsed operations are sent to the server. Market data comes through the app's own server from Yahoo Finance, Stooq and NBP, so your browser does not talk to those services directly. Those services only receive instrument symbols and currency codes, never your positions or amounts.",
+            "XTB reports, the .zip as well as .xlsx files, are read in your browser; only the parsed operations are sent to the server. Market data comes through the app's own server from Yahoo Finance, Stooq and NBP, so your browser does not talk to those services directly. Those services only receive instrument symbols and currency codes, never your positions or amounts.",
           ],
         },
         {
@@ -471,7 +476,7 @@ export const PAGES: Record<Exclude<RouteKey, "home">, Record<Lang, FeaturePage>>
           h2: "Co zapisuje aplikacja",
           list: [
             "Z Google: imię, adres e-mail i zdjęcie profilowe. Po zalogowaniu nie przechowujemy tokenów Google.",
-            "Portfel: operacje i pozycje z wgranych plików XTB oraz Twoje ustawienia.",
+            "Portfele: operacje i pozycje z wgranych raportów XTB, osobno dla każdej przestrzeni, oraz Twoje ustawienia.",
             "Opcjonalnie: adresy webhooków Slacka lub Discorda, reguły alertów i ustawienia publicznej strony, jeśli z nich korzystasz.",
           ],
         },
@@ -480,6 +485,7 @@ export const PAGES: Record<Exclude<RouteKey, "home">, Record<Lang, FeaturePage>>
           list: [
             "Cały portfel jest kompresowany i szyfrowany AES-256-GCM, zanim zostanie zapisany. Klucz szyfrujący jest przechowywany oddzielnie od danych.",
             "Adresy webhooków szyfrujemy tak samo i po zapisaniu już ich nie wyświetlamy.",
+            "Alerty e-mail wysyłamy z alerts@starpedia.pl przez Resend, usługę wysyłki e-maili, i tylko na adres Twojego konta Google. Wiadomość zawiera treść alertu, na przykład cenę albo wartość portfela.",
             "Wszystko jest przechowywane na serwerach w Europie.",
             "Sesje opierają się na podpisanych ciasteczkach, a każda zmiana danych jest sprawdzana pod kątem pochodzenia z tej samej strony.",
           ],
@@ -488,14 +494,14 @@ export const PAGES: Record<Exclude<RouteKey, "home">, Record<Lang, FeaturePage>>
           h2: "Twoja kontrola",
           list: [
             "W każdej chwili pobierzesz pełną kopię portfela w JSON.",
-            "Możesz usunąć pojedyncze konto z portfela albo wszystko razem z kontem użytkownika.",
+            "Możesz usunąć pojedyncze konto z portfela, całą przestrzeń albo wszystko razem z kontem użytkownika.",
             "Wylogowanie czyści też dane rynkowe zapisane w przeglądarce.",
           ],
         },
         {
           h2: "Co dzieje się w przeglądarce",
           p: [
-            "Pliki XTB czytamy w przeglądarce, a na serwer trafiają tylko odczytane operacje. Dane rynkowe pobiera serwer aplikacji z Yahoo Finance, Stooq i NBP, więc Twoja przeglądarka nie łączy się z tymi serwisami bezpośrednio. Te serwisy dostają wyłącznie symbole instrumentów i kody walut, nigdy Twoje pozycje ani kwoty.",
+            "Raporty XTB, zarówno plik .zip, jak i pliki .xlsx, czytamy w przeglądarce, a na serwer trafiają tylko odczytane operacje. Dane rynkowe pobiera serwer aplikacji z Yahoo Finance, Stooq i NBP, więc Twoja przeglądarka nie łączy się z tymi serwisami bezpośrednio. Te serwisy dostają wyłącznie symbole instrumentów i kody walut, nigdy Twoje pozycje ani kwoty.",
           ],
         },
         {

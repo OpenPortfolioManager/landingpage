@@ -18,10 +18,14 @@ npm run build    # astro check + static build into dist/
 | `src/lib/site.ts` | Routes (one key per page, EN and PL path), URL helpers, number formatting, SVG path helpers |
 | `src/layouts/Base.astro` | `<head>`: title, description, canonical, hreflang (en, pl, x-default), Open Graph, JSON-LD |
 | `src/components/HeroDemo.astro` | The animated app demo (dashboard, import, benchmarks, dividends, alerts) |
-| `src/scripts/motion.ts` | Reveal on scroll, count-ups, demo tabs, simulated quote ticks; honours `prefers-reduced-motion` |
+| `src/components/XtbGuide.astro` | Animated xStation walk-through for downloading the report `.zip` (after the app's import guide) |
+| `src/components/WinRateDemo.astro`, `SpacesDemo.astro`, `AlertChannels.astro` | Win rate counted trade by trade, the spaces switcher, alerts by e-mail / Slack / Discord |
+| `src/components/Avatar.astro` | Instrument logo (from `public/logos/`, copied from the app) or a monogram |
+| `src/scripts/motion.ts` | Reveal on scroll, count-ups, demo tabs, simulated quote ticks, self-advancing switchers, the guide player; honours `prefers-reduced-motion` |
 | `src/pages/sitemap.xml.ts`, `robots.txt.ts` | Sitemap with language alternates, robots |
 | `src/data/demo.json` | Demo portfolio numbers |
 | `public/img/` | Screenshots of the real app running on the demo portfolio |
+| `public/logos/` | Logos the app bundles, only for the instruments the demo portfolio holds or traded (mapped in `src/lib/site.ts`) |
 
 Adding a page: add its key to `ROUTES` in `src/lib/site.ts`, its copy to `src/content/pages.ts`, and a page file for each
 language under `src/pages/` and `src/pages/pl/`. Canonical, hreflang and sitemap entries follow from `ROUTES`.
@@ -30,7 +34,8 @@ language under `src/pages/` and `src/pages/pl/`. Canonical, hreflang and sitemap
 
 `src/data/demo.json` and the screenshots come from the app repository: the demo XTB portfolio (three accounts, PLN, USD and
 IKE, January 2023 to today, simulated prices) is imported through the app's own XTB parser and valued with its analytics
-engine, so every number on the site is one the app would show for those exports.
+engine, so every number on the site is one the app would show for those exports. `closed` holds the demo's closed
+positions (XTB profit per lot, account currency) behind the win-rate section.
 
 ## Domain and SEO
 
