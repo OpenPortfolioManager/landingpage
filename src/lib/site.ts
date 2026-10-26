@@ -81,6 +81,27 @@ export const linePath = (pts: ReadonlyArray<readonly [number, number]>) => {
 export const areaPath = (pts: ReadonlyArray<readonly [number, number]>, h: number) =>
   `${linePath(pts)} L${pts[pts.length - 1][0].toFixed(1)},${h} L${pts[0][0].toFixed(1)},${h} Z`;
 
+/** Logos bundled with the app (its public/logos), copied for the instruments the demo portfolio holds or traded. */
+const LOGOS: Record<string, string> = {
+  "VWCE.DE": "issuer-vanguard",
+  "CSPX.UK": "issuer-ishares",
+  "ETFBW20TR.PL": "issuer-beta",
+  "PKO.PL": "pko.pl",
+  "XTB.PL": "xtb.pl",
+  "CDR.PL": "cdr.pl",
+  "PZU.PL": "pzu.pl",
+  "KGH.PL": "kgh.pl",
+  "ALE.PL": "ale.pl",
+  "NVDA.US": "nvda",
+  "AAPL.US": "aapl",
+  "MSFT.US": "msft",
+  "TSLA.US": "tsla",
+  "KO.US": "ko",
+  "O.US": "o",
+  "INTC.US": "intc",
+};
+export const logo = (ticker: string) => (LOGOS[ticker] ? href(`/logos/${LOGOS[ticker]}.webp`) : null);
+
 /** Deterministic monogram colour for a ticker (decoration; the ticker text carries identity). */
 export const tickerHue = (ticker: string) => [...ticker.replace(/\..*$/, "")].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % 360;
 export const tickerStyle = (ticker: string, size = 36) => {

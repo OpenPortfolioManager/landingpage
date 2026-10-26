@@ -157,6 +157,17 @@ body {
     letter-spacing: -0.02em;
     color: #fff;
   }
+  .avatar-logo {
+    overflow: hidden;
+    background: #fff;
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.1);
+  }
+  .avatar-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 12%;
+  }
 }
 
 
@@ -214,41 +225,41 @@ body {
   transition: opacity 0.5s var(--ease-liquid), transform 0.5s var(--ease-spring);
   transition-delay: calc(var(--d, 0) * 1ms);
 }
-/* Demo panes and chart ranges replay on their own (their ancestor may already be revealed). */
-.js :is([data-pane], [data-range]) .draw {
+/* Demo panes, chart ranges and other switchable panes (data-replay) replay on their own (their ancestor may already be revealed). */
+.js :is([data-pane], [data-range], [data-replay]) .draw {
   stroke-dashoffset: 1;
   transition: none;
 }
-.js :is([data-pane], [data-range]).in .draw {
+.js :is([data-pane], [data-range], [data-replay]).in .draw {
   stroke-dashoffset: 0;
   transition: stroke-dashoffset 1.8s var(--ease-liquid);
   transition-delay: calc(var(--d, 0) * 1ms);
 }
-.js :is([data-pane], [data-range]) .pop-in {
+.js :is([data-pane], [data-range], [data-replay]) .pop-in {
   opacity: 0;
   transform: translateY(8px) scale(0.98);
   transition: none;
 }
-.js :is([data-pane], [data-range]).in .pop-in {
+.js :is([data-pane], [data-range], [data-replay]).in .pop-in {
   opacity: 1;
   transform: none;
   transition: opacity 0.5s var(--ease-liquid), transform 0.5s var(--ease-spring);
   transition-delay: calc(var(--d, 0) * 1ms);
 }
-.js :is([data-pane], [data-range]) .grow {
+.js :is([data-pane], [data-range], [data-replay]) .grow {
   transform: scaleY(0);
   transition: none;
 }
-.js :is([data-pane], [data-range]).in .grow {
+.js :is([data-pane], [data-range], [data-replay]).in .grow {
   transform: scaleY(1);
   transition: transform 0.9s var(--ease-spring);
   transition-delay: calc(var(--d, 0) * 1ms);
 }
-.js :is([data-pane], [data-range]) .fill-fade {
+.js :is([data-pane], [data-range], [data-replay]) .fill-fade {
   opacity: 0;
   transition: none;
 }
-.js :is([data-pane], [data-range]).in .fill-fade {
+.js :is([data-pane], [data-range], [data-replay]).in .fill-fade {
   opacity: 1;
   transition: opacity 1.2s ease 0.6s;
 }
@@ -261,11 +272,11 @@ body {
   transition: transform 0.9s var(--ease-liquid);
   transition-delay: calc(var(--d, 0) * 1ms);
 }
-.js [data-pane] .grow-x {
+.js :is([data-pane], [data-replay]) .grow-x {
   transform: scaleX(0);
   transition: none;
 }
-.js [data-pane].in .grow-x {
+.js :is([data-pane], [data-replay]).in .grow-x {
   transform: scaleX(1);
   transition: transform 0.9s var(--ease-liquid);
   transition-delay: calc(var(--d, 0) * 1ms);
@@ -305,4 +316,20 @@ body {
 }
 ::selection {
   background: color-mix(in oklab, var(--accent) 35%, transparent);
+}
+
+/* Progress of the selected tab in switchers that advance on their own ([data-cycle], see motion.ts). */
+[data-cycle] [aria-selected="true"] [data-progress] {
+  animation: cycle-progress var(--interval, 4000ms) linear forwards;
+}
+[data-cycle].paused [data-progress] {
+  animation-play-state: paused;
+}
+[data-cycle].manual [data-progress] {
+  animation: none;
+}
+@keyframes cycle-progress {
+  to {
+    transform: scaleX(1);
+  }
 }

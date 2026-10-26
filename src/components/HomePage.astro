@@ -2,9 +2,14 @@
 import demo from "../data/demo.json";
 import { HOME, UI } from "../content/copy";
 import Base from "../layouts/Base.astro";
-import { absolute, APP_LOGIN, DEMO_URL, href, linePath, money, pct, route, ROUTES, scale, signedPct, thin, tickerShort, tickerStyle, type Lang } from "../lib/site";
+import { absolute, APP_LOGIN, DEMO_URL, href, linePath, money, pct, route, ROUTES, scale, signedPct, thin, type Lang } from "../lib/site";
+import AlertChannels from "./AlertChannels.astro";
+import Avatar from "./Avatar.astro";
 import HeroDemo from "./HeroDemo.astro";
 import Icon from "./Icon.astro";
+import SpacesDemo from "./SpacesDemo.astro";
+import WinRateDemo from "./WinRateDemo.astro";
+import XtbGuide from "./XtbGuide.astro";
 
 interface Props {
   lang: Lang;
@@ -71,8 +76,29 @@ const shots = c.screens.tabs.map((t) => ({
 const themeShots = ["desk-overview", "indigo-light", "amber-light", "amber-dark"];
 const img = (name: string) => ({ src: href(`/img/${name}-1600.webp`), srcset: `${href(`/img/${name}-960.webp`)} 960w, ${href(`/img/${name}-1600.webp`)} 1600w` });
 
-const featureIcon = { live: "live", returns: "returns", bench: "bench", div: "div", tax: "tax", ike: "ike", alerts: "alerts", public: "public", deposits: "deposit" } as const;
-const featureLink: Partial<Record<string, string>> = { bench: route("benchmark", lang), div: route("dividends", lang), tax: route("tax", lang), public: route("public", lang) };
+const featureIcon = {
+  live: "live",
+  returns: "returns",
+  bench: "bench",
+  winrate: "target",
+  div: "div",
+  tax: "tax",
+  ike: "ike",
+  spaces: "spaces",
+  alerts: "alerts",
+  public: "public",
+  deposits: "deposit",
+  logos: "image",
+} as const;
+const featureLink: Partial<Record<string, string>> = {
+  bench: route("benchmark", lang),
+  winrate: "#win-rate",
+  div: route("dividends", lang),
+  tax: route("tax", lang),
+  spaces: "#spaces",
+  alerts: "#alerts",
+  public: route("public", lang),
+};
 
 const jsonLd = [
   {
@@ -133,7 +159,10 @@ const jsonLd = [
       <p class="eyebrow">{c.how.eyebrow}</p>
       <h2 class="mt-3 text-[clamp(30px,4.2vw,48px)] font-semibold leading-[1.08] tracking-[-0.035em]">{c.how.h2}</h2>
     </div>
-    <ol class="mt-12 grid gap-5 md:grid-cols-3">
+    <div data-reveal style="--d:120" class="mt-12">
+      <XtbGuide lang={lang} />
+    </div>
+    <ol class="mt-10 grid gap-5 md:grid-cols-3">
       {
         c.how.steps.map((s, i) => (
           <li data-reveal style={`--d:${i * 120}`} class="glass p-6">
@@ -230,7 +259,7 @@ const jsonLd = [
         {
           ranges.map((r) => (
             <div data-range={r.k} hidden={r.k !== "all"} data-animate>
-              <svg viewBox={`0 0 ${box.w + 64} ${box.h + 28}`} class="mt-5 block h-auto w-full" role="img" aria-label={`${c.bench.h2} ${r.from} – ${r.to}`}>
+              <svg viewBox={`0 0 ${box.w + 64} ${box.h + 28}`} class="mt-5 block h-auto w-full" role="img" aria-label={`${c.bench.h2} ${r.from} - ${r.to}`}>
                 {r.ticks.map((t) => (
                   <g>
                     <line x1="0" x2={box.w} y1={t.y} y2={t.y} stroke="var(--grid)" />
@@ -257,6 +286,32 @@ const jsonLd = [
           ))
         }
         <p class="mt-3 text-xs text-muted">{ui.demo.label} · {ui.demo.benchNote}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= win rate ================= -->
+  <section id="win-rate" class="mx-auto max-w-6xl scroll-mt-28 px-5 pt-28 sm:px-8">
+    <div class="grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+      <div data-reveal style="--d:120" class="order-2 lg:order-1">
+        <WinRateDemo lang={lang} />
+      </div>
+      <div data-reveal class="order-1 lg:order-2">
+        <p class="eyebrow">{c.winrate.eyebrow}</p>
+        <h2 class="mt-3 text-[clamp(30px,4.2vw,48px)] font-semibold leading-[1.08] tracking-[-0.035em]">{c.winrate.h2}</h2>
+        <p class="mt-4 text-[17px] leading-relaxed text-ink-2">{c.winrate.lead}</p>
+        <ul class="mt-6 space-y-3">
+          {
+            c.winrate.points.map((p) => (
+              <li class="flex items-start gap-3 text-[15px] text-ink-2">
+                <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gain/15 text-gain">
+                  <Icon name="check" size={13} stroke={3} />
+                </span>
+                {p}
+              </li>
+            ))
+          }
+        </ul>
       </div>
     </div>
   </section>
@@ -371,33 +426,36 @@ const jsonLd = [
     </div>
   </section>
 
-  <!-- ================= alerts ================= -->
-  <section class="mx-auto max-w-6xl px-5 pt-28 sm:px-8">
+  <!-- ================= spaces ================= -->
+  <section id="spaces" class="mx-auto max-w-6xl scroll-mt-28 px-5 pt-28 sm:px-8">
     <div class="grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-2">
       <div data-reveal style="--d:120" class="order-2 lg:order-1">
-        <div class="glass-float rounded-[28px] p-5 sm:p-6" data-animate>
-          <div class="flex items-center gap-2 text-sm text-muted">
-            <span class="flex h-6 w-6 items-center justify-center rounded-md bg-[#4a154b] text-[11px] font-bold text-white">S</span>
-            Slack · {ui.demo.channel}
-          </div>
-          <div class="pop-in mt-4 flex gap-3" style="--d:300">
-            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#2c2577]">
-              <svg viewBox="0 0 474 352" class="h-4 w-auto" aria-hidden="true"><circle cx="237" cy="176" r="64" fill="#7b63f5"></circle><line x1="9" y1="176" x2="465" y2="176" stroke="#d6cfff" stroke-width="18" stroke-linecap="round"></line></svg>
-            </span>
-            <div class="min-w-0 text-[13.5px] leading-relaxed">
-              <div class="flex items-baseline gap-2"><b class="font-semibold">portfoliomanager</b><span class="rounded bg-white/10 px-1 text-[9px] font-bold">APP</span><span class="text-[11px] text-muted">22:41</span></div>
-              <div class="mt-1 text-base font-bold">portfoliomanager · 3 alerty · {demo.asOf.split("-").reverse().join(".")}</div>
-              <div class="mt-1 space-y-0.5 text-ink-2">
-                <div class="pop-in" style="--d:700">📈 PKO BP (PKO.PL): +1,51% dziś (próg +1,5%) · cena 82,00 zł</div>
-                <div class="pop-in" style="--d:950">🎯 NVIDIA (NVDA.US): cena 182,00 USD ≥ 180,00 USD · alert jednorazowy, wyłączony</div>
-                <div class="pop-in" style="--d:1200">💰 Portfel: wartość 266 971 zł ≥ 250 000 zł</div>
-              </div>
-              <div class="pop-in mt-2 text-xs text-muted" style="--d:1400"><span class="text-accent underline">Otwórz portfoliomanager</span> · dane na {demo.asOf.split("-").reverse().join(".")}</div>
-            </div>
-          </div>
-        </div>
+        <SpacesDemo lang={lang} />
       </div>
       <div data-reveal class="order-1 lg:order-2">
+        <p class="eyebrow">{c.spaces.eyebrow}</p>
+        <h2 class="mt-3 text-[clamp(30px,4.2vw,48px)] font-semibold leading-[1.08] tracking-[-0.035em]">{c.spaces.h2}</h2>
+        <p class="mt-4 text-[17px] leading-relaxed text-ink-2">{c.spaces.lead}</p>
+        <ul class="mt-6 space-y-3">
+          {
+            c.spaces.points.map((p) => (
+              <li class="flex items-start gap-3 text-[15px] text-ink-2">
+                <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gain/15 text-gain">
+                  <Icon name="check" size={13} stroke={3} />
+                </span>
+                {p}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= alerts ================= -->
+  <section id="alerts" class="mx-auto max-w-6xl scroll-mt-28 px-5 pt-28 sm:px-8">
+    <div class="grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-2">
+      <div data-reveal>
         <p class="eyebrow">{c.alerts.eyebrow}</p>
         <h2 class="mt-3 text-[clamp(30px,4.2vw,48px)] font-semibold leading-[1.08] tracking-[-0.035em]">{c.alerts.h2}</h2>
         <p class="mt-4 text-[17px] leading-relaxed text-ink-2">{c.alerts.lead}</p>
@@ -413,21 +471,16 @@ const jsonLd = [
         </ul>
         {c.alerts.note && <p class="mt-4 text-xs text-muted">{c.alerts.note}</p>}
       </div>
+      <div data-reveal style="--d:120">
+        <AlertChannels lang={lang} />
+      </div>
     </div>
   </section>
 
   <!-- ================= public portfolio ================= -->
   <section class="mx-auto max-w-6xl px-5 pt-28 sm:px-8">
     <div class="grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-2">
-      <div data-reveal>
-        <p class="eyebrow">{c.public.eyebrow}</p>
-        <h2 class="mt-3 text-[clamp(30px,4.2vw,48px)] font-semibold leading-[1.08] tracking-[-0.035em]">{c.public.h2}</h2>
-        <p class="mt-4 text-[17px] leading-relaxed text-ink-2">{c.public.lead}</p>
-        <a href={route("public", lang)} class="mt-7 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-2">
-          {c.public.more} <Icon name="arrow" size={15} />
-        </a>
-      </div>
-      <div data-reveal style="--d:120" class="glass-float rounded-[28px] p-6" data-animate>
+      <div data-reveal style="--d:120" class="glass-float order-2 rounded-[28px] p-6 lg:order-1" data-animate>
         <div class="inset inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[11px] text-ink-2">
           <span class="live-dot !h-1.5 !w-1.5"></span>portfolio.starpedia.pl/p/anna
         </div>
@@ -456,9 +509,7 @@ const jsonLd = [
                 <tr class="pop-in border-t border-line" style={`--d:${300 + i * 100}`}>
                   <td class="py-2">
                     <span class="flex items-center gap-2.5">
-                      <span class="avatar" style={tickerStyle(h.ticker, 28)} aria-hidden="true">
-                        {tickerShort(h.ticker)}
-                      </span>
+                      <Avatar ticker={h.ticker} size={28} />
                       <span class="max-w-[170px] truncate">{h.name}</span>
                     </span>
                   </td>
@@ -469,6 +520,14 @@ const jsonLd = [
             }
           </tbody>
         </table>
+      </div>
+      <div data-reveal class="order-1 lg:order-2">
+        <p class="eyebrow">{c.public.eyebrow}</p>
+        <h2 class="mt-3 text-[clamp(30px,4.2vw,48px)] font-semibold leading-[1.08] tracking-[-0.035em]">{c.public.h2}</h2>
+        <p class="mt-4 text-[17px] leading-relaxed text-ink-2">{c.public.lead}</p>
+        <a href={route("public", lang)} class="mt-7 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-2">
+          {c.public.more} <Icon name="arrow" size={15} />
+        </a>
       </div>
     </div>
   </section>

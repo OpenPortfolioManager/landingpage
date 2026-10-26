@@ -3895,5 +3895,63 @@
    "currency": "PLN",
    "type": "IKE"
   }
+ ],
+ "closed": [
+  {
+   "date": "2024-08-12",
+   "account": "USD",
+   "ticker": "INTC.US",
+   "name": "Intel",
+   "profit": 217.8,
+   "currency": "USD"
+  },
+  {
+   "date": "2024-11-18",
+   "account": "PLN",
+   "ticker": "KGH.PL",
+   "name": "KGHM",
+   "profit": -1258.92,
+   "currency": "PLN"
+  },
+  {
+   "date": "2024-12-16",
+   "account": "USD",
+   "ticker": "TSLA.US",
+   "name": "Tesla",
+   "profit": 156.16,
+   "currency": "USD"
+  },
+  {
+   "date": "2025-03-10",
+   "account": "PLN",
+   "ticker": "ALE.PL",
+   "name": "Allegro",
+   "profit": 4138.2,
+   "currency": "PLN"
+  },
+  {
+   "date": "2025-06-16",
+   "account": "PLN",
+   "ticker": "PZU.PL",
+   "name": "PZU",
+   "profit": 2298,
+   "currency": "PLN"
+  },
+  {
+   "date": "2025-09-08",
+   "account": "PLN",
+   "ticker": "CDR.PL",
+   "name": "CD PROJEKT",
+   "profit": 3185.4,
+   "currency": "PLN"
+  },
+  {
+   "date": "2026-05-11",
+   "account": "PLN",
+   "ticker": "NVDA.US",
+   "name": "NVIDIA",
+   "profit": 8359.6,
+   "currency": "PLN"
+  }
  ]
 }

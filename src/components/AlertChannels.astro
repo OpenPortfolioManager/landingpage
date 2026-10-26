@@ -1,0 +1,148 @@
+---
+// One evening's alerts as they arrive in each channel, in the formats of src/lib/alerts/messages.ts in the app
+// (e-mail from alerts@starpedia.pl, Slack blocks, Discord embed). Panes switch on their own (data-cycle).
+import demo from "../data/demo.json";
+import { HOME, UI } from "../content/copy";
+import type { Lang } from "../lib/site";
+import Icon from "./Icon.astro";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = HOME[lang].alerts;
+
+const asOf = demo.asOf.split("-").reverse().join(".");
+const plMoney = (x: number, ccy = "PLN", d = 0) => new Intl.NumberFormat("pl-PL", { style: "currency", currency: ccy, minimumFractionDigits: d, maximumFractionDigits: d }).format(x);
+const plPct = (x: number, d = 2) => `${x >= 0 ? "+" : "−"}${new Intl.NumberFormat("pl-PL", { style: "percent", minimumFractionDigits: d, maximumFractionDigits: d }).format(Math.abs(x))}`;
+const pko = demo.movers.find((m) => m.ticker === "PKO.PL")!;
+const nvda = demo.movers.find((m) => m.ticker === "NVDA.US")!;
+const head = `portfoliomanager · 3 alerty · ${asOf}`;
+const lines = [
+  `📈 PKO BP (PKO.PL): ${plPct(pko.dayPct)} dziś (próg +1,5%) · cena ${plMoney(pko.price, "PLN", 2)}`,
+  `🎯 NVIDIA (NVDA.US): cena ${plMoney(nvda.price, "USD", 2)} ≥ ${plMoney(180, "USD", 2)} · alert jednorazowy, wyłączony`,
+  `💰 Portfel: wartość ${plMoney(demo.totals.value)} ≥ ${plMoney(250000)}`,
+];
+const tabs = [
+  { k: "email", label: "E-mail" },
+  { k: "slack", label: "Slack" },
+  { k: "discord", label: "Discord" },
+];
+---
+<div class="glass-float rounded-[28px] p-4 sm:p-5" data-cycle data-interval="4200">
+  <div role="tablist" aria-label={c.channels} class="inset inline-flex gap-1 rounded-full p-1">
+    {
+      tabs.map((t, i) => (
+        <button
+          type="button"
+          role="tab"
+          id={`channel-tab-${t.k}`}
+          aria-controls={`channel-pane-${t.k}`}
+          aria-selected={i === 0 ? "true" : "false"}
+          tabindex={i === 0 ? 0 : -1}
+          data-cycle-btn
+          class="relative inline-flex items-center gap-1.5 overflow-hidden rounded-full px-3.5 py-1.5 text-sm font-medium text-ink-2 transition-colors aria-selected:bg-surface-2 aria-selected:text-ink"
+        >
+          {t.k === "email" ? (
+            <Icon name="mail" size={14} />
+          ) : (
+            <span class:list={["flex h-3.5 w-3.5 items-center justify-center rounded-[4px] text-[8px] font-bold text-white", t.k === "slack" ? "bg-[#4a154b]" : "bg-[#5865f2]"]} aria-hidden="true">
+              {t.label[0]}
+            </span>
+          )}
+          {t.label}
+          <span class="absolute inset-x-3 bottom-0.5 h-[2px] overflow-hidden rounded-full">
+            <span data-progress class="block h-full w-full origin-left scale-x-0 rounded-full bg-accent/70" />
+          </span>
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="mt-4 min-h-[300px] sm:min-h-[262px]">
+    <!-- e-mail -->
+    <section id="channel-pane-email" role="tabpanel" aria-labelledby="channel-tab-email" data-cycle-pane data-replay>
+      <div class="pop-in space-y-1 px-1 text-[13px]" style="--d:60">
+        <div class="flex gap-2">
+          <span class="w-8 shrink-0 text-muted">{c.from}</span>
+          <span class="min-w-0 truncate"><b class="font-semibold">portfoliomanager</b> <span class="text-ink-2">&lt;alerts@starpedia.pl&gt;</span></span>
+        </div>
+        <div class="flex gap-2">
+          <span class="w-8 shrink-0 text-muted">{c.to}</span>
+          <span class="text-ink-2">jan@example.com</span>
+        </div>
+      </div>
+      <div class="pop-in mt-3 rounded-[18px] bg-[#f4f3fa] p-4 text-[13.5px] leading-relaxed text-[#1f2330]" style="--d:200">
+        <div class="text-[15px] font-bold">{head}</div>
+        <ul class="mt-2 list-disc space-y-1 pl-5">
+          {
+            lines.map((l, i) => (
+              <li class="pop-in" style={`--d:${450 + i * 220}`}>
+                {l}
+              </li>
+            ))
+          }
+        </ul>
+        <p class="pop-in mt-3 text-xs text-[#6b7080]" style="--d:1150">Dane na {asOf}. Alerty zmienisz lub wyłączysz w zakładce Alerty: portfolio.starpedia.pl/#alerty</p>
+      </div>
+    </section>
+
+    <!-- Slack -->
+    <section id="channel-pane-slack" role="tabpanel" aria-labelledby="channel-tab-slack" data-cycle-pane data-replay hidden>
+      <div class="flex items-center gap-2 px-1 text-sm text-muted">
+        <span class="flex h-6 w-6 items-center justify-center rounded-md bg-[#4a154b] text-[11px] font-bold text-white">S</span>
+        Slack · {UI[lang].demo.channel}
+      </div>
+      <div class="pop-in mt-4 flex gap-3" style="--d:150">
+        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#2c2577]">
+          <svg viewBox="0 0 474 352" class="h-4 w-auto" aria-hidden="true"><circle cx="237" cy="176" r="64" fill="#7b63f5"></circle><line x1="9" y1="176" x2="465" y2="176" stroke="#d6cfff" stroke-width="18" stroke-linecap="round"></line></svg>
+        </span>
+        <div class="min-w-0 text-[13.5px] leading-relaxed">
+          <div class="flex items-baseline gap-2"><b class="font-semibold">portfoliomanager</b><span class="rounded bg-white/10 px-1 text-[9px] font-bold">APP</span><span class="text-[11px] text-muted">22:41</span></div>
+          <div class="mt-1 text-base font-bold">{head}</div>
+          <div class="mt-1 space-y-0.5 text-ink-2">
+            {
+              lines.map((l, i) => (
+                <div class="pop-in" style={`--d:${400 + i * 220}`}>
+                  {l}
+                </div>
+              ))
+            }
+          </div>
+          <div class="pop-in mt-2 text-xs text-muted" style="--d:1100"><span class="text-accent underline">Otwórz portfoliomanager</span> · dane na {asOf}</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Discord -->
+    <section id="channel-pane-discord" role="tabpanel" aria-labelledby="channel-tab-discord" data-cycle-pane data-replay hidden>
+      <div class="flex items-center gap-2 px-1 text-sm text-muted">
+        <span class="text-lg leading-none">#</span>
+        <span class="font-semibold text-ink">{UI[lang].demo.channel.replace("#", "")}</span>
+        <span class="ml-auto text-xs">Discord</span>
+      </div>
+      <div class="pop-in mt-4 flex gap-3" style="--d:150">
+        <span class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#2c2577]">
+          <svg viewBox="0 0 474 352" class="h-5 w-auto" aria-hidden="true"><circle cx="237" cy="176" r="64" fill="#7b63f5"></circle><line x1="9" y1="176" x2="465" y2="176" stroke="#d6cfff" stroke-width="18" stroke-linecap="round"></line></svg>
+        </span>
+        <div class="min-w-0">
+          <div class="flex items-baseline gap-2">
+            <span class="text-sm font-semibold text-accent-2">portfoliomanager</span>
+            <span class="rounded bg-accent-deep px-1 py-px text-[9px] font-bold text-white">APP</span>
+            <span class="text-[11px] text-muted">{lang === "pl" ? "dziś, 22:41" : "Today, 22:41"}</span>
+          </div>
+          <div class="mt-1.5 border-l-4 border-[#d97706] bg-white/[.03] py-2.5 pl-3.5 pr-3 text-[13px] leading-relaxed">
+            <div class="font-semibold text-accent-2">{head}</div>
+            {
+              lines.map((l, i) => (
+                <div class="pop-in text-ink-2" style={`--d:${400 + i * 220}`}>
+                  {l}
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

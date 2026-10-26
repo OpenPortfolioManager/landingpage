@@ -214,3 +214,201 @@ for (const box of document.querySelectorAll<HTMLElement>("[data-shots]")) {
     }),
   );
 }
+
+// ---------------------------------------------------------------- switchers that advance on their own (spaces, alert channels)
+
+for (const box of document.querySelectorAll<HTMLElement>("[data-cycle]")) {
+  const tabs = [...box.querySelectorAll<HTMLButtonElement>("[data-cycle-btn]")];
+  const panes = [...box.querySelectorAll<HTMLElement>("[data-cycle-pane]")];
+  const interval = Number(box.dataset.interval ?? 4000);
+  box.style.setProperty("--interval", `${interval}ms`);
+  let index = 0;
+  let timer = 0;
+  let visible = false;
+  let manual = reduce;
+  if (manual) box.classList.add("manual");
+
+  const restartBar = () => {
+    const bar = tabs[index].querySelector<HTMLElement>("[data-progress]");
+    if (!bar) return;
+    bar.style.animation = "none";
+    void bar.offsetWidth;
+    bar.style.animation = "";
+  };
+  const schedule = () => {
+    clearTimeout(timer);
+    if (manual || !visible || document.hidden || box.classList.contains("paused")) return;
+    timer = window.setTimeout(() => show(index + 1), interval);
+  };
+  const show = (i: number, focus = false) => {
+    index = (i + tabs.length) % tabs.length;
+    tabs.forEach((t, j) => {
+      t.setAttribute("aria-selected", String(j === index));
+      t.tabIndex = j === index ? 0 : -1;
+    });
+    panes.forEach((p, j) => (p.hidden = j !== index));
+    replay(panes[index]);
+    restartBar();
+    if (focus) tabs[index].focus();
+    schedule();
+  };
+  const pick = (i: number, focus = false) => {
+    manual = true;
+    box.classList.add("manual");
+    show(i, focus);
+  };
+
+  tabs.forEach((t, i) => {
+    t.addEventListener("click", () => pick(i));
+    t.addEventListener("keydown", (e) => {
+      const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+      if (!step) return;
+      e.preventDefault();
+      pick(index + step, true);
+    });
+  });
+  box.addEventListener("pointerenter", () => {
+    box.classList.add("paused");
+    clearTimeout(timer);
+  });
+  box.addEventListener("pointerleave", () => {
+    box.classList.remove("paused");
+    restartBar();
+    schedule();
+  });
+  document.addEventListener("visibilitychange", schedule);
+  new IntersectionObserver(
+    ([e]) => {
+      const was = visible;
+      visible = e.isIntersecting;
+      if (visible && !was) show(index);
+      else if (!visible) clearTimeout(timer);
+    },
+    { threshold: 0.3 },
+  ).observe(box);
+}
+
+// ---------------------------------------------------------------- XTB report guide (cursor and highlight over an SVG of xStation)
+
+const easeOut = (k: number) => 1 - Math.pow(1 - k, 4);
+
+for (const guide of document.querySelectorAll<HTMLElement>("[data-guide]")) {
+  const steps = [...guide.querySelectorAll<HTMLButtonElement>("[data-guide-step]")];
+  const ring = guide.querySelector<SVGRectElement>("[data-guide-ring]")!;
+  const badge = guide.querySelector<SVGGElement>("[data-guide-badge]")!;
+  const cursor = guide.querySelector<SVGGElement>("[data-guide-cursor]")!;
+  const click = guide.querySelector<SVGElement>("[data-guide-click]")!;
+  const toggle = guide.querySelector<HTMLButtonElement>("[data-guide-toggle]");
+  const ms = Number(guide.dataset.stepMs ?? 2800);
+  const boxOf = (i: number) => steps[i].dataset.box!.split(" ").map(Number);
+  let at = boxOf(0);
+  let index = 0;
+  let timer = 0;
+  let frame = 0;
+  let clickTimer = 0;
+  let visible = false;
+  let hover = false;
+  let playing = !reduce;
+
+  // The highlight hugs the control; the cursor points at it a little right of its centre.
+  const draw = ([x, y, w, h]: number[]) => {
+    ring.setAttribute("x", String(x - 4));
+    ring.setAttribute("y", String(y - 4));
+    ring.setAttribute("width", String(w + 8));
+    ring.setAttribute("height", String(h + 8));
+    badge.setAttribute("transform", `translate(${x - 4} ${y - 4})`);
+    cursor.setAttribute("transform", `translate(${x + w * 0.6} ${y + h * 0.6})`);
+  };
+  const moveTo = (to: number[]) => {
+    cancelAnimationFrame(frame);
+    if (reduce) {
+      draw((at = to));
+      return;
+    }
+    const from = at;
+    let start = -1;
+    const tick = (now: number) => {
+      if (start < 0) start = now;
+      const k = easeOut(Math.min(1, (now - start) / 650));
+      at = from.map((v, j) => v + (to[j] - v) * k);
+      draw(at);
+      if (k < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+  };
+  const schedule = () => {
+    clearTimeout(timer);
+    if (!playing || hover || !visible || document.hidden) return;
+    timer = window.setTimeout(() => go(index + 1), ms);
+  };
+  const go = (i: number) => {
+    index = (i + steps.length) % steps.length;
+    const s = steps[index];
+    guide.dataset.scene = s.dataset.scene;
+    guide.dataset.flags = s.dataset.flags ?? "";
+    steps.forEach((b, j) => (j === index ? b.setAttribute("aria-current", "step") : b.removeAttribute("aria-current")));
+    badge.querySelector("text")!.textContent = String(index + 1);
+    moveTo(boxOf(index));
+    clearTimeout(clickTimer);
+    click.classList.remove("go");
+    if (!reduce) clickTimer = window.setTimeout(() => click.classList.add("go"), 700);
+    schedule();
+  };
+  const setPlaying = (on: boolean) => {
+    playing = on;
+    if (toggle) {
+      toggle.setAttribute("aria-label", (on ? toggle.dataset.pause : toggle.dataset.play) ?? "");
+      toggle.querySelector<HTMLElement>("[data-icon=pause]")!.hidden = !on;
+      toggle.querySelector<HTMLElement>("[data-icon=play]")!.hidden = on;
+    }
+    schedule();
+  };
+
+  steps.forEach((b, i) => b.addEventListener("click", () => go(i)));
+  toggle?.addEventListener("click", () => setPlaying(!playing));
+  setPlaying(playing);
+  guide.addEventListener("pointerenter", () => {
+    hover = true;
+    clearTimeout(timer);
+  });
+  guide.addEventListener("pointerleave", () => {
+    hover = false;
+    schedule();
+  });
+  document.addEventListener("visibilitychange", schedule);
+  new IntersectionObserver(
+    ([e]) => {
+      const was = visible;
+      visible = e.isIntersecting;
+      if (visible && !was) go(index);
+      else if (!visible) clearTimeout(timer);
+    },
+    { threshold: 0.3 },
+  ).observe(guide);
+}
+
+// ---------------------------------------------------------------- win rate: closed trades counted one by one
+
+for (const wr of document.querySelectorAll<HTMLElement>("[data-winrate]")) {
+  if (reduce) continue; // the final numbers are rendered at build time
+  const rows = [...wr.querySelectorAll<HTMLElement>("[data-wr-row]")];
+  const rate = wr.querySelector<HTMLElement>("[data-wr-rate]")!;
+  const sub = wr.querySelector<HTMLElement>("[data-wr-sub]")!;
+  const lang = wr.dataset.lang ?? "en";
+  const step = Number(wr.dataset.step ?? 420);
+  const show = (n: number) => {
+    const wins = rows.slice(0, n).filter((r) => r.dataset.win === "1").length;
+    rate.textContent = formatValue(wins / n, "pct", lang, 0);
+    sub.textContent = sub.dataset.tpl!.replace("{w}", String(wins)).replace("{n}", String(n));
+  };
+  // Rows pop in at 200 + i * step ms (CSS); the count follows each one as it lands.
+  new IntersectionObserver(
+    ([e], obs) => {
+      if (!e.isIntersecting) return;
+      obs.disconnect();
+      show(1);
+      rows.forEach((_, i) => i && window.setTimeout(() => show(i + 1), 320 + i * step));
+    },
+    { rootMargin: "0px 0px -8% 0px", threshold: 0.12 },
+  ).observe(wr);
+}
