@@ -1,0 +1,185 @@
+---
+// The report .zip dropped into the app and its operations streaming in: real operations of the demo portfolio
+// (demo.json "feed") and its import counts. Plays when it scrolls into view and on "play again" (motion.ts).
+import demo from "../data/demo.json";
+import { HOME, UI } from "../content/copy";
+import { signedMoney, type Lang } from "../lib/site";
+import Avatar from "./Avatar.astro";
+import Icon from "./Icon.astro";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = HOME[lang].how;
+const ui = UI[lang].demo;
+
+const ROW = 46;
+const VISIBLE = 5;
+const rows = demo.feed.map((o) => ({ ...o, ccy: o.account === "USD" ? "USD" : "PLN" }));
+const end = -(rows.length - VISIBLE) * ROW;
+const total = demo.imports.reduce((s, f) => s + f.cashOps, 0);
+const closed = demo.imports.reduce((s, f) => s + f.closedLots, 0);
+const open = demo.imports.reduce((s, f) => s + f.openLots, 0);
+const zipName = `${demo.imports.map((f) => f.account).join("_")}_2023-01-01_${demo.asOf}.zip`;
+const date = (t: string) => new Intl.DateTimeFormat(lang === "pl" ? "pl-PL" : "en-GB", { day: "numeric", month: "short", year: "numeric" }).format(new Date(`${t.slice(0, 10)}T12:00:00Z`));
+---
+<div class="glass-float rounded-[28px] p-4 sm:p-5" data-upload data-replay>
+  <div class="up-drop flex flex-col items-center rounded-[18px] border-2 border-dashed border-line-strong bg-white/[.02] px-4 pb-4 pt-5 text-center">
+    <span class="up-zip inline-flex max-w-full items-center gap-2 rounded-xl border border-line-strong bg-surface-2 px-3 py-2 text-[12.5px]">
+      <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-accent-deep text-[8px] font-bold text-white">ZIP</span>
+      <span class="truncate">{zipName}</span>
+    </span>
+    <p class="mt-2.5 text-xs text-muted">{ui.dropTitle}</p>
+  </div>
+
+  <div class="mt-4 flex items-center justify-between gap-3 text-sm">
+    <span class="grid font-semibold [&>*]:col-start-1 [&>*]:row-start-1">
+      <span class="up-reading inline-flex items-center gap-2"><span class="up-spin" aria-hidden="true"></span>{c.reading}</span>
+      <span class="up-ready inline-flex items-center gap-1.5 text-gain"><Icon name="check" size={15} stroke={3} />{c.ready}</span>
+    </span>
+    <span class="tabular text-right text-ink-2">
+      <b class="font-semibold text-ink" data-count={total} data-fmt="int" data-lang={lang} data-delay="700" data-ms="2600">{total}</b>
+      {ui.ops}
+    </span>
+  </div>
+  <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-white/5">
+    <div class="up-bar h-full w-full origin-left rounded-full bg-accent"></div>
+  </div>
+
+  <div class="up-view inset relative mt-3 overflow-hidden rounded-2xl" style={`height:${VISIBLE * ROW}px`} aria-hidden="true">
+    <ul class="up-feed" style={`--end:${end}px`}>
+      {
+        rows.map((o) => (
+          <li class="flex items-center gap-3 border-b border-line px-3" style={`height:${ROW}px`}>
+            {o.ticker ? (
+              <Avatar ticker={o.ticker} size={28} />
+            ) : (
+              <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-[10px] bg-accent-soft text-accent">
+                <Icon name="deposit" size={15} />
+              </span>
+            )}
+            <span class="min-w-0 flex-1">
+              <span class="block truncate text-[13px] font-medium">
+                {o.type}
+                {o.ticker && <span class="font-normal text-muted"> · {o.ticker}</span>}
+              </span>
+              <span class="block text-[11px] text-muted">
+                {date(o.time)} · {o.account}
+              </span>
+            </span>
+            <span class:list={["tabular whitespace-nowrap text-[13px] font-semibold", o.amount >= 0 ? "text-gain" : "text-ink"]}>{signedMoney(o.amount, lang, 2, o.ccy)}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <div class="mt-3 grid grid-cols-3 gap-2">
+    {
+      demo.imports.map((f, i) => (
+        <div class="pop-in inset rounded-xl px-3 py-2" style={`--d:${3300 + i * 120}`}>
+          <div class="text-[11px] text-muted">XTB {f.label}</div>
+          <div class="tabular text-sm font-semibold">{f.cashOps}</div>
+        </div>
+      ))
+    }
+  </div>
+  <div class="mt-3 flex items-center justify-between gap-3 text-xs text-muted">
+    <span class="pop-in" style="--d:3700">{closed} {ui.closed} · {open} {ui.open}</span>
+    <button type="button" data-upload-replay class="up-replay shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-ink-2 transition-colors hover:bg-white/5 hover:text-ink">
+      <Icon name="play" size={12} stroke={2.4} />
+      {c.replay}
+    </button>
+  </div>
+</div>
+
+<style>
+  .up-view {
+    mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+  }
+  .up-spin {
+    width: 12px;
+    height: 12px;
+    border-radius: 9999px;
+    border: 2px solid color-mix(in oklab, var(--accent) 30%, transparent);
+    border-top-color: var(--accent);
+    animation: up-spin 0.8s linear infinite;
+  }
+  @keyframes up-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Without JS everything shows its final state; html.js opts into the start states, .in plays them. */
+  .up-reading {
+    opacity: 0;
+  }
+  :global(.js) [data-upload] .up-reading {
+    opacity: 1;
+  }
+  :global(.js) [data-upload].in .up-reading {
+    animation: up-out 0.3s ease 3.3s forwards;
+  }
+  :global(.js) [data-upload] .up-ready {
+    opacity: 0;
+  }
+  :global(.js) [data-upload].in .up-ready {
+    animation: up-in 0.4s ease 3.3s forwards;
+  }
+  @keyframes up-out {
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes up-in {
+    to {
+      opacity: 1;
+    }
+  }
+
+  :global(.js) [data-upload] .up-zip {
+    opacity: 0;
+    transform: translateY(-26px) scale(0.96);
+  }
+  :global(.js) [data-upload].in .up-zip {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.35s ease 0.1s,
+      transform 0.6s var(--ease-spring) 0.1s;
+  }
+  :global(.js) [data-upload].in .up-drop {
+    animation: up-glow 1.2s ease 0.45s;
+  }
+  @keyframes up-glow {
+    30% {
+      border-color: var(--accent);
+      background: color-mix(in oklab, var(--accent) 8%, transparent);
+    }
+  }
+
+  /* The bar fills and the operations stream in from the top while the counter runs (data-delay 700, data-ms 2600). */
+  :global(.js) [data-upload] .up-bar {
+    transform: scaleX(0);
+  }
+  :global(.js) [data-upload].in .up-bar {
+    transform: scaleX(1);
+    transition: transform 2.6s cubic-bezier(0.3, 0.1, 0.2, 1) 0.7s;
+  }
+  :global(.js) [data-upload] .up-feed {
+    transform: translateY(var(--end));
+  }
+  :global(.js) [data-upload].in .up-feed {
+    transform: none;
+    transition: transform 2.6s cubic-bezier(0.3, 0.1, 0.2, 1) 0.7s;
+  }
+
+  .up-replay {
+    display: none;
+  }
+  :global(.js) .up-replay {
+    display: inline-flex;
+  }
+</style>

@@ -11,7 +11,7 @@ interface Props {
 const { lang, page } = Astro.props;
 const t = UI[lang].footer;
 const other: Lang = lang === "en" ? "pl" : "en";
-const guides = (["dividends", "tax", "benchmark", "public"] as const).map((k) => ({ href: route(k, lang), label: PAGES[k][lang].crumb }));
+const guides = (["import", "dividends", "tax", "benchmark", "public"] as const).map((k) => ({ href: route(k, lang), label: PAGES[k][lang].crumb }));
 const year = new Date().getFullYear();
 ---
 <footer class="mt-24 border-t border-line">

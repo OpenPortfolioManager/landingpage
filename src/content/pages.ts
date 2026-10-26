@@ -22,6 +22,108 @@ export interface FeaturePage {
 
 // Placeholders like {ttm} are filled with demo numbers at build time (see FeatureLayout).
 export const PAGES: Record<Exclude<RouteKey, "home">, Record<Lang, FeaturePage>> = {
+  import: {
+    en: {
+      title: "How to import XTB files into portfoliomanager (xStation report .zip) | portfoliomanager",
+      description:
+        "Step by step: download one report with all your XTB accounts from xStation and drop the .zip into portfoliomanager. Free, read in your browser, no XTB login needed.",
+      crumb: "Importing XTB files",
+      eyebrow: "Import",
+      h1: "How to import XTB files into portfoliomanager",
+      lead:
+        "One report from xStation covers every account you have at XTB. Download it as a .zip, drop it into the app, and the portfolio is ready in about a minute. The animation below shows each click.",
+      sections: [
+        {
+          h2: "One report for all accounts",
+          p: [
+            "The report you create in xStation from Account history can include every account at once: PLN, USD, EUR, IKE and IKZE. XTB packs it as a .zip with one .xlsx file per account.",
+            "portfoliomanager takes the .zip as it is. Unpacked .xlsx files work too, one at a time or several at once.",
+          ],
+        },
+        {
+          h2: "What the app reads",
+          list: [
+            "Cash Operations: deposits, withdrawals, dividends, withholding tax, fees and interest",
+            "Closed Positions: every sale with its purchase price and date, for the PIT-38 estimate and the win rate",
+            "Open Positions: what you hold today, valued at current prices",
+          ],
+        },
+        {
+          h2: "Keeping the portfolio up to date",
+          p: [
+            "Quotes refresh on their own, but new trades and dividends come with a new report. Download one whenever you like and drop it in again.",
+            'Overlapping periods are safe: every operation is matched by its XTB ID, so nothing is counted twice. The period "All" is the simplest choice.',
+          ],
+        },
+        {
+          h2: "Where the file goes",
+          p: [
+            "The report is read in your browser. Only the parsed operations are sent to the server, where the portfolio is stored encrypted. The file itself is not uploaded, and the app never asks for your XTB login.",
+          ],
+        },
+        {
+          h2: "A family member's report",
+          p: ["Import it into a separate space, so the portfolios do not mix. Each space keeps its own imports, alerts and public page."],
+        },
+      ],
+      faq: [
+        { q: "Do I need my XTB password?", a: "No. You download the report yourself and upload the file. portfoliomanager never connects to your XTB account." },
+        { q: "What if I import the same period twice?", a: "Nothing changes. Operations already in the portfolio are recognised by their XTB ID and skipped." },
+        { q: "Can I import separate .xlsx files instead of the .zip?", a: "Yes. Drop one or more account .xlsx files from the report. The result is the same." },
+      ],
+      related: ["dividends", "tax", "privacy"],
+    },
+    pl: {
+      title: "Jak importować pliki z XTB do portfoliomanagera (raport .zip z xStation) | portfoliomanager",
+      description:
+        "Krok po kroku: pobierz z xStation jeden raport ze wszystkimi kontami XTB i wrzuć plik .zip do portfoliomanagera. Za darmo, plik czytany w przeglądarce, bez loginu do XTB.",
+      crumb: "Import plików z XTB",
+      eyebrow: "Import",
+      h1: "Jak importować pliki z XTB do portfoliomanagera",
+      lead:
+        "Jeden raport z xStation obejmuje wszystkie Twoje konta w XTB. Pobierz go jako plik .zip, wrzuć do aplikacji i po około minucie portfel jest gotowy. Animacja poniżej pokazuje każde kliknięcie.",
+      sections: [
+        {
+          h2: "Jeden raport na wszystkie konta",
+          p: [
+            "Raport, który tworzysz w xStation z Historii konta, może objąć wszystkie konta naraz: PLN, USD, EUR, IKE i IKZE. XTB pakuje go w plik .zip z jednym plikiem .xlsx na każde konto.",
+            "portfoliomanager przyjmuje plik .zip bez rozpakowywania. Rozpakowane pliki .xlsx też zadziałają, pojedynczo albo kilka naraz.",
+          ],
+        },
+        {
+          h2: "Co czyta aplikacja",
+          list: [
+            "Cash Operations: wpłaty, wypłaty, dywidendy, podatek u źródła, opłaty i odsetki",
+            "Closed Positions: każdą sprzedaż z ceną i datą zakupu, do szacunku PIT-38 i skuteczności transakcji",
+            "Open Positions: to, co masz dziś, wycenione po bieżących kursach",
+          ],
+        },
+        {
+          h2: "Aktualizacja portfela",
+          p: [
+            "Notowania odświeżają się same, ale nowe transakcje i dywidendy przychodzą z nowym raportem. Pobierz go, kiedy chcesz, i wrzuć ponownie.",
+            "Nakładające się okresy są bezpieczne: każdą operację rozpoznajemy po jej ID z XTB, więc nic nie liczy się podwójnie. Najprościej wybrać okres „Wszystko”.",
+          ],
+        },
+        {
+          h2: "Co dzieje się z plikiem",
+          p: [
+            "Raport czytamy w Twojej przeglądarce. Na serwer trafiają tylko odczytane operacje, a portfel jest tam przechowywany w postaci zaszyfrowanej. Sam plik nie jest wysyłany, a aplikacja nigdy nie prosi o login do XTB.",
+          ],
+        },
+        {
+          h2: "Raport kogoś z rodziny",
+          p: ["Zaimportuj go do osobnej przestrzeni, żeby portfele się nie mieszały. Każda przestrzeń ma własne importy, alerty i publiczną stronę."],
+        },
+      ],
+      faq: [
+        { q: "Czy potrzebuję hasła do XTB?", a: "Nie. Raport pobierasz sam i wgrywasz plik. portfoliomanager nigdy nie łączy się z Twoim kontem w XTB." },
+        { q: "Co, jeśli zaimportuję ten sam okres dwa razy?", a: "Nic się nie zmieni. Operacje, które już są w portfelu, rozpoznajemy po ID z XTB i pomijamy." },
+        { q: "Czy mogę wgrać osobne pliki .xlsx zamiast .zip?", a: "Tak. Wrzuć jeden albo kilka plików .xlsx z raportu. Wynik będzie taki sam." },
+      ],
+      related: ["dividends", "tax", "privacy"],
+    },
+  },
   dividends: {
     en: {
       title: "XTB Dividend Tracker: net payouts, withholding tax, yield | portfoliomanager",

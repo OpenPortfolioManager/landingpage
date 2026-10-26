@@ -3,7 +3,7 @@
 // (src/components/XtbExportGuide.tsx in the app). One SVG, so it scales with the column; src/scripts/motion.ts
 // switches the scene and moves the highlight and the cursor to each step's control.
 import demo from "../data/demo.json";
-import { HOME } from "../content/copy";
+import { GUIDE } from "../content/copy";
 import type { Lang } from "../lib/site";
 import Icon from "./Icon.astro";
 
@@ -11,7 +11,7 @@ interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
-const g = HOME[lang].how.guide;
+const g = GUIDE[lang];
 const m = g.mock;
 
 // xStation-like palette for the platform screens, as in the app's guide.

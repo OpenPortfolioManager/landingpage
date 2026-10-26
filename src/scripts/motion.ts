@@ -34,7 +34,8 @@ export const formatValue = (v: number, fmt: string, lang: string, digits?: numbe
 // ---------------------------------------------------------------- count-up
 
 const counters = new WeakMap<HTMLElement, number>();
-const countUp = (el: HTMLElement, ms = 1400) => {
+// data-ms sets the duration, data-delay holds the count at zero first.
+const countUp = (el: HTMLElement, ms = Number(el.dataset.ms ?? 1400)) => {
   const to = Number(el.dataset.count);
   const fmt = el.dataset.fmt ?? "num";
   const lang = el.dataset.lang ?? "en";
@@ -46,9 +47,10 @@ const countUp = (el: HTMLElement, ms = 1400) => {
     return;
   }
   cancelAnimationFrame(counters.get(el) ?? 0);
+  const delay = Number(el.dataset.delay ?? 0);
   let start = -1;
   const tick = (now: number) => {
-    if (start < 0) start = now;
+    if (start < 0) start = now + delay;
     const k = Math.min(1, Math.max(0, (now - start) / ms));
     const eased = 1 - Math.pow(1 - k, 4);
     el.textContent = k >= 1 ? finalText : formatValue(to * eased, fmt, lang, digits, el.dataset.ccy);
@@ -411,4 +413,18 @@ for (const wr of document.querySelectorAll<HTMLElement>("[data-winrate]")) {
     },
     { rootMargin: "0px 0px -8% 0px", threshold: 0.12 },
   ).observe(wr);
+}
+
+// ---------------------------------------------------------------- upload demo: plays each time it scrolls into view, and on request
+
+for (const up of document.querySelectorAll<HTMLElement>("[data-upload]")) {
+  let inView = false;
+  new IntersectionObserver(
+    ([e]) => {
+      if (e.isIntersecting && !inView) replay(up);
+      inView = e.isIntersecting;
+    },
+    { threshold: 0.35 },
+  ).observe(up);
+  up.querySelector("[data-upload-replay]")?.addEventListener("click", () => replay(up));
 }
