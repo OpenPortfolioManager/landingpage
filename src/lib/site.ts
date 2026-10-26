@@ -7,6 +7,7 @@ export const DEMO_URL = `${APP_URL}/demo`;
 /** Every page exists in both languages; the key pairs them for canonical and hreflang links. */
 export const ROUTES = {
   home: { en: "/", pl: "/pl/" },
+  import: { en: "/how-to-import-xtb-files/", pl: "/pl/jak-importowac-pliki-z-xtb/" },
   dividends: { en: "/xtb-dividend-tracker/", pl: "/pl/dywidendy-xtb/" },
   tax: { en: "/xtb-pit-38-tax-calculator/", pl: "/pl/kalkulator-pit-38-xtb/" },
   benchmark: { en: "/compare-portfolio-with-sp500/", pl: "/pl/porownanie-portfela-z-sp500/" },

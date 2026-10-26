@@ -3953,5 +3953,203 @@
    "profit": 8359.6,
    "currency": "PLN"
   }
+ ],
+ "feed": [
+  {
+   "time": "2026-09-14 10:34",
+   "account": "PLN",
+   "type": "Stock purchase",
+   "ticker": "KGH.PL",
+   "amount": -9319.31
+  },
+  {
+   "time": "2026-06-24 05:15",
+   "account": "PLN",
+   "type": "Withholding Tax",
+   "ticker": "PKO.PL",
+   "amount": -461.28
+  },
+  {
+   "time": "2026-06-24 05:15",
+   "account": "PLN",
+   "type": "Dividend",
+   "ticker": "PKO.PL",
+   "amount": 2427.8
+  },
+  {
+   "time": "2026-06-10 05:31",
+   "account": "PLN",
+   "type": "Withholding Tax",
+   "ticker": "XTB.PL",
+   "amount": -212.99
+  },
+  {
+   "time": "2026-06-10 05:31",
+   "account": "PLN",
+   "type": "Dividend",
+   "ticker": "XTB.PL",
+   "amount": 1121
+  },
+  {
+   "time": "2026-05-11 14:52",
+   "account": "PLN",
+   "type": "Stock sale",
+   "ticker": "NVDA.US",
+   "amount": 11678.43
+  },
+  {
+   "time": "2026-03-16 14:37",
+   "account": "USD",
+   "type": "Stock purchase",
+   "ticker": "KO.US",
+   "amount": -360.95
+  },
+  {
+   "time": "2026-03-10 14:16",
+   "account": "IKE",
+   "type": "Stock purchase",
+   "ticker": "VWCE.DE",
+   "amount": -12852.97
+  },
+  {
+   "time": "2026-03-09 06:36",
+   "account": "IKE",
+   "type": "IKE Deposit",
+   "ticker": "",
+   "amount": 15000
+  },
+  {
+   "time": "2026-02-10 09:19",
+   "account": "PLN",
+   "type": "Stock purchase",
+   "ticker": "XTB.PL",
+   "amount": -6741.75
+  },
+  {
+   "time": "2025-10-21 14:46",
+   "account": "IKE",
+   "type": "Stock purchase",
+   "ticker": "CSPX.UK",
+   "amount": -4855.11
+  },
+  {
+   "time": "2025-10-21 13:26",
+   "account": "IKE",
+   "type": "Stock purchase",
+   "ticker": "ETFBW20TR.PL",
+   "amount": -2400.72
+  },
+  {
+   "time": "2025-10-20 08:01",
+   "account": "IKE",
+   "type": "IKE Deposit",
+   "ticker": "",
+   "amount": 10000
+  },
+  {
+   "time": "2025-10-06 08:35",
+   "account": "PLN",
+   "type": "Stock purchase",
+   "ticker": "ETFBW20TR.PL",
+   "amount": -5972.12
+  },
+  {
+   "time": "2025-10-02 05:53",
+   "account": "PLN",
+   "type": "Withholding Tax",
+   "ticker": "PZU.PL",
+   "amount": -78.74
+  },
+  {
+   "time": "2025-10-02 05:53",
+   "account": "PLN",
+   "type": "Dividend",
+   "ticker": "PZU.PL",
+   "amount": 414.4
+  },
+  {
+   "time": "2025-09-08 10:41",
+   "account": "PLN",
+   "type": "Stock sale",
+   "ticker": "CDR.PL",
+   "amount": 5609.4
+  },
+  {
+   "time": "2025-06-25 06:34",
+   "account": "PLN",
+   "type": "Withholding Tax",
+   "ticker": "PKO.PL",
+   "amount": -419.69
+  },
+  {
+   "time": "2025-06-25 06:34",
+   "account": "PLN",
+   "type": "Dividend",
+   "ticker": "PKO.PL",
+   "amount": 2208.9
+  },
+  {
+   "time": "2025-06-16 09:14",
+   "account": "PLN",
+   "type": "Stock sale",
+   "ticker": "PZU.PL",
+   "amount": 5716
+  },
+  {
+   "time": "2025-06-12 06:46",
+   "account": "PLN",
+   "type": "Dividend",
+   "ticker": "CDR.PL",
+   "amount": 67
+  },
+  {
+   "time": "2025-06-11 05:22",
+   "account": "PLN",
+   "type": "Withholding Tax",
+   "ticker": "XTB.PL",
+   "amount": -166.35
+  },
+  {
+   "time": "2025-06-11 05:22",
+   "account": "PLN",
+   "type": "Dividend",
+   "ticker": "XTB.PL",
+   "amount": 875.5
+  },
+  {
+   "time": "2025-04-15 17:59",
+   "account": "USD",
+   "type": "Stock purchase",
+   "ticker": "AAPL.US",
+   "amount": -857.08
+  },
+  {
+   "time": "2025-04-15 15:31",
+   "account": "USD",
+   "type": "Stock purchase",
+   "ticker": "MSFT.US",
+   "amount": -926.02
+  },
+  {
+   "time": "2025-03-10 10:46",
+   "account": "PLN",
+   "type": "Stock sale",
+   "ticker": "ALE.PL",
+   "amount": 11621.16
+  },
+  {
+   "time": "2025-03-04 13:57",
+   "account": "PLN",
+   "type": "Stock purchase",
+   "ticker": "CDR.PL",
+   "amount": -6178.5
+  },
+  {
+   "time": "2025-02-18 08:20",
+   "account": "IKE",
+   "type": "Stock purchase",
+   "ticker": "VWCE.DE",
+   "amount": -10385.95
+  }
  ]
 }
